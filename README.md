@@ -35,10 +35,12 @@ server {
           proxy_pass http://localhost:3000/;
           proxy_set_header Host $host;
        }
-}```
+}
+```
 
 ## Mysqlのコマンド
-```ssh debian@133.242.132.37
+```
+ssh debian@133.242.132.37
 sudo mysql -u root -p
 
 CREATE DATABASE myDatabase;
@@ -58,8 +60,8 @@ CREATE TABLE `sp_user` (
   `username` varchar(128) NOT NULL DEFAULT '' COMMENT '',
   `password` char(64) NOT NULL DEFAULT '' COMMENT '',
   `user_email` varchar(64) NOT NULL DEFAULT '' COMMENT '',
-  `is_active` enum('是','否') DEFAULT '否' COMMENT '',
-  `user_sex` enum('保密','女','男') NOT NULL DEFAULT '男' COMMENT '',
+  `is_active` enum('YES','NO') DEFAULT 'NO' COMMENT '',
+  `user_sex` enum('秘密','女','男') NOT NULL DEFAULT '男' COMMENT '',
   `user_tel` varchar(32) NOT NULL DEFAULT '' COMMENT '',
   `user_educational_background` enum('小学博士','博士','碩士','本科','專科','高中','初中','小学') NOT NULL DEFAULT '本科' COMMENT '学歴',
   `user_hobby` varchar(32) NOT NULL DEFAULT '' COMMENT '',
