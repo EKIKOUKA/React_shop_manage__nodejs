@@ -42,9 +42,15 @@ server {
 sudo mysql -u root -p
 
 CREATE DATABASE myDatabase;
-select user();
+SELECT user();
+SHOW DATABASES;
 use myDatabase;
-show tables;
+SHOW tables;
+SELECT * FROM sp_goods ORDER BY goods_id DESC;
+INSERT INTO sp_goods (goods_name, add_time)
+    VALUES (?, UNIX_TIMESTAMP(NOW()));
+UPDATE sp_goods SET goods_name = ? WHERE goods_id = ?;
+DELETE FROM sp_goods WHERE goods_id = ${id};
 
 DROP TABLE IF EXISTS `sp_user`;
 CREATE TABLE `sp_user` (
