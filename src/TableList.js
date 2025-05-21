@@ -48,7 +48,7 @@ function TableList() {
             render: (_, record) => (
                 <Space size="middle">
                     <a onClick={() => showModal("update", record)}>編集</a>
-                    <Popconfirm title="削除?" onConfirm={() => handleDelete(record.goods_id)}>
+                    <Popconfirm title="削除?" cancelText="キャンセル" okText="確定" onConfirm={() => handleDelete(record.goods_id)}>
                         <a>削除</a>
                     </Popconfirm>
                 </Space>
@@ -146,6 +146,8 @@ function TableList() {
               title="商品名"
               closable={false}
               open={isModalOpen}
+              cancelText="キャンセル" 
+              okText="確定"
               onOk={handleOk}
               onCancel={handleCancel}
             >
