@@ -1,4 +1,4 @@
-# NodejsとMySqlとNginxをサポートしているのReactのテーブルサンプル
+# NodejsとMySqlとNginxをサポートしているのReact + Ant Designのテーブルサンプル
 
 ## ウェブサイトアドレス： http://133.242.132.37/table_sample/
 <img width="1222" alt="スクリーンショット 0007-05-20 23 55 58" src="https://github.com/user-attachments/assets/30720c9a-d86b-413c-b8cd-2fe2bb018119" />
