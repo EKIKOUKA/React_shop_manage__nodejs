@@ -1,5 +1,5 @@
 export default function request(url, data = {}) {
-    return fetch(`/api/${url}`, {
+    return fetch(`/table_sample/api/${url}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

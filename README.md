@@ -18,7 +18,8 @@
 
 ## Nginx 配置
 ### sudo vi /etc/nginx/sites-available/default
-```server {
+```
+server {
         listen 80 default_server;
         listen [::]:80 default_server;
 
@@ -67,4 +68,3 @@ CREATE TABLE `sp_user` (
 INSERT INTO `sp_user` VALUES ('1', '習維尼', '$2a$08$lV0Gr4AKx7xH7cCU4KCGCOikNzGPaWIpw9W7A9BONIxoJ2.hGC9qi', 'w@zce.me', '1242d9b5', '', '', '', '小学博士', '', null, '1512033129', '1512033129');
 INSERT INTO `sp_user` VALUES ('11', 'ww', '$2a$08$09nUxs.9czzXc4JZJTOdteeXSd/mxZVg96AhqciGbTMB6cfbGUWC2', 'i@zce.me', 'f9a9d0cc', '', '', '12313211', '博士', '123123', '123123123', '1512122098', '1512122098');
 ```
-

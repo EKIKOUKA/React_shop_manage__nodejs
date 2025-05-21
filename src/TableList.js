@@ -12,9 +12,9 @@ function TableList() {
     if (status === "update") {
       setGoods_name(record.goods_name)
       setRecord(record)
-    } else { 
+    } else {
       setGoods_name("");
-      setRecord({}); 
+      setRecord({});
     }
   };
   const handleOk = () => {
@@ -30,7 +30,7 @@ function TableList() {
     setGoods_name("");
     setRecord({});
   };
- 
+
   const [goodsName, setGoods_name] = useState("");
   const [goodsRecord, setRecord] = useState({});
   const [formStatus, setFormStatus] = useState("");
@@ -47,10 +47,10 @@ function TableList() {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
+                    <a onClick={() => showModal("update", record)}>編集</a>
                     <Popconfirm title="削除?" onConfirm={() => handleDelete(record.goods_id)}>
                         <a>削除</a>
                     </Popconfirm>
-                    <a onClick={() => showModal("update", record)}>編集</a>
                 </Space>
             ),
         }
