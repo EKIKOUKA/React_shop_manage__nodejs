@@ -8,7 +8,7 @@
 #### disk: df -h
 
 ## Nodejs
-#### pm2 start server.js
+#### pm2 start server.js --name table_sample
 #### pm2 restart server
 
 ## Nginxのコマンド
@@ -40,7 +40,7 @@ server {
 
 ## Mysqlのコマンド
 ```
-ssh debian@133.242.132.37
+ssh user@133.242.132.37
 sudo mysql -u root -p
 
 CREATE DATABASE myDatabase;
@@ -66,9 +66,11 @@ CREATE TABLE `sp_user` (
   `user_educational_background` enum('小学博士','博士','碩士','本科','專科','高中','初中','小学') NOT NULL DEFAULT '本科' COMMENT '学歴',
   `user_hobby` varchar(32) NOT NULL DEFAULT '' COMMENT '',
   `user_introduce` text COMMENT '',
-  `create_time` int(11) NOT NULL COMMENT '',
+  `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成時間',
+  `update_time` TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '変更時間',
+
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='user';
+) ENGINE=InnoDB AUTO_INCREMENT=10001 DEFAULT CHARSET=utf8 COMMENT='user';
 
 -- ----------------------------
 -- Records of sp_user
