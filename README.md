@@ -1,6 +1,7 @@
-# React + Ant Designのテーブルサンプル、Node.jsとMySqlとNginxをサポートしている
-## ウェブサイトアドレス： http://133.242.132.37/table_sample/
-<img width="1222" alt="スクリーンショット 0007-05-20 23 55 58" src="https://github.com/user-attachments/assets/30720c9a-d86b-413c-b8cd-2fe2bb018119" />
+# React + Ant Designのショップサンプル、Node.jsとMySqlとNginxをサポートしている
+## ウェブサイトアドレス： http://133.242.132.37/shop_sample/#/goods
+<img width="1222" alt="スクリーンショット 0007-05-20 23 55 58" src="https://github.com/user-attachments/assets/3171fcae-02a1-4a3c-a648-cd4cb851f404" />
+
 
 #### memory: free -h
 #### top: cpu
