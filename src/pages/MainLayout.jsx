@@ -9,11 +9,6 @@ import {
 
 const { Sider, Content } = Layout;
 
-// [
-//     { key: 'goods', label: '商品管理', icon: <ShoppingCartOutlined /> },
-//     { key: 'orders', label: '訂單管理', icon: <OrderedListOutlined /> },
-//     { key: 'users', label: '用戶管理', icon: <UserOutlined /> },
-// ];
 const menuItems = [
     {
         key: 'sub1',
@@ -21,34 +16,34 @@ const menuItems = [
         icon: <AppstoreOutlined />,
         children: [
             {
-                key: 'g1',
-                label: 'ユーザーリスト',
+                key: 'users',
+                label: 'ユーザーリスト'
             }
-        ],
+        ]
     },
     {
         key: 'sub2',
         label: '権限管理',
         icon: <AppstoreOutlined />,
         children: [
-            { key: '5', label: 'Option 5' },
-        ],
+            { key: '5', label: '権限リスト' }
+        ]
     },
     {
         key: 'sub3',
         label: '商品管理',
         icon: <AppstoreOutlined />,
         children: [
-            { key: 'goods', label: '商品リスト', icon: <ShoppingCartOutlined /> },
-        ],
+            { key: 'goods', label: '商品リスト', icon: <ShoppingCartOutlined /> }
+        ]
     },
     {
         key: 'sub4',
         label: '注文管理',
         icon: <AppstoreOutlined />,
         children: [
-            { key: '5', label: '注文リスト' },
-        ],
+            { key: 'orders', label: '注文リスト' }
+        ]
     }
 ];
 
@@ -69,7 +64,7 @@ const MainLayout = () => {
             </Sider>
             <Layout>
                 <Content style={{ margin: '16px' }}>
-                    <Outlet /> {/* 子頁面顯示區 */}
+                    <Outlet />
                 </Content>
             </Layout>
         </Layout>

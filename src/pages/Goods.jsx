@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import request from "../request"
+import request from "../request.jsx"
 import { Button, Table, Input, Modal, Space, Popconfirm } from 'antd';
 
 function Goods() {

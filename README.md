@@ -1,15 +1,12 @@
-# React + Ant Designのショップサンプル、Node.jsとMySqlとNginxをサポートしている
+# React + Vite + Ant Designのショップサンプル、Node.jsとMySqlとNginxをサポートしている
 ## ウェブサイトアドレス： http://133.242.132.37/shop_sample/#/goods
 <img width="1222" alt="スクリーンショット 0007-05-20 23 55 58" src="https://github.com/user-attachments/assets/3171fcae-02a1-4a3c-a648-cd4cb851f404" />
 
 
-#### memory: free -h
-#### top: cpu
-#### disk: df -h
-
 ## Nodejs
-#### pm2 start server.js --name table_sample
-#### pm2 restart server
+#### pm2 start server.js --name shop_sample
+#### pm2 restart shop_sample
+#### pm2 delete *
 
 ## Nginxのコマンド
 #### sudo nginx -t  # 設定の間違いがないようにチェクして
@@ -25,18 +22,22 @@ server {
 
         server_name 133.242.132.37 _;
 
-        location /table_sample {
-            alias /home/debian/React_table_training_nodejs/build/;
+        location /shop_sample {
+            alias /home/debian/React_shop_manage__nodejs/dist/;
             index index.html;
             try_files $uri $uri/ /index.html;
        }
 
-       location /table_sample/api/ {
+       location /shop_sample/api/ {
           proxy_pass http://localhost:3000/;
           proxy_set_header Host $host;
        }
 }
 ```
+
+#### memory: free -h
+#### top: cpu
+#### disk: df -h
 
 ## Mysqlのコマンド
 ```
@@ -48,6 +49,8 @@ SELECT user();
 SHOW DATABASES;
 use myDatabase;
 SHOW tables;
+mysql -u user -p < /home/db.sql
+
 SELECT * FROM sp_goods ORDER BY goods_id DESC;
 INSERT INTO sp_goods (goods_name, add_time)
     VALUES (?, UNIX_TIMESTAMP(NOW()));
@@ -56,25 +59,25 @@ DELETE FROM sp_goods WHERE goods_id = ${id};
 
 DROP TABLE IF EXISTS `sp_user`;
 CREATE TABLE `sp_user` (
-  `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '',
-  `username` varchar(128) NOT NULL DEFAULT '' COMMENT '',
-  `password` char(64) NOT NULL DEFAULT '' COMMENT '',
-  `user_email` varchar(64) NOT NULL DEFAULT '' COMMENT '',
-  `is_active` enum('YES','NO') DEFAULT 'NO' COMMENT '',
+  `user_id` int PRIMARY KEY AUTO_INCREMENT,
+  `username` varchar NOT NULL DEFAULT '' COMMENT '',
+  `password` char NOT NULL DEFAULT '' COMMENT '',
   `user_sex` enum('秘密','女','男') NOT NULL DEFAULT '男' COMMENT '',
-  `user_tel` varchar(32) NOT NULL DEFAULT '' COMMENT '',
   `user_educational_background` enum('小学博士','博士','碩士','本科','專科','高中','初中','小学') NOT NULL DEFAULT '本科' COMMENT '学歴',
-  `user_hobby` varchar(32) NOT NULL DEFAULT '' COMMENT '',
-  `user_introduce` text COMMENT '',
   `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成時間',
-  `update_time` TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '変更時間',
-
-  PRIMARY KEY (`user_id`)
+  `update_time` TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '変更時間'
 ) ENGINE=InnoDB AUTO_INCREMENT=10001 DEFAULT CHARSET=utf8 COMMENT='user';
+
+CREATE TABLE meal_records (
+  id INT PRIMARY KEY AUTOINCREMENT,
+  ingredient_id INT NOT NULL,
+  event_day DATE,
+  FOREIGN KEY (ingredient_id) REFERENCES ingredients(id)
+);
 
 -- ----------------------------
 -- Records of sp_user
 -- ----------------------------
-INSERT INTO `sp_user` VALUES ('1', '習維尼', '$2a$08$lV0Gr4AKx7xH7cCU4KCGCOikNzGPaWIpw9W7A9BONIxoJ2.hGC9qi', 'w@zce.me', '1242d9b5', '', '', '', '小学博士', '', null, '1512033129', '1512033129');
-INSERT INTO `sp_user` VALUES ('11', 'ww', '$2a$08$09nUxs.9czzXc4JZJTOdteeXSd/mxZVg96AhqciGbTMB6cfbGUWC2', 'i@zce.me', 'f9a9d0cc', '', '', '12313211', '博士', '123123', '123123123', '1512122098', '1512122098');
+INSERT INTO `sp_user` VALUES ('1', '習維尼', '$2a$08$lV0Gr4AKx7xH7cCU4KCGCOikNzGPaWIpw9W7A9BONIxoJ2.hGC9qi', 'w@zce.me', '1242d9b5', '', '小学博士', '1512033129', '1512033129');
+INSERT INTO `sp_user` VALUES ('11', 'ww', '$2a$08$09nUxs.9czzXc4JZJTOdteeXSd/mxZVg96AhqciGbTMB6cfbGUWC2', 'i@zce.me', 'f9a9d0cc', '12313211', '博士', '1512122098', '1512122098');
 ```
