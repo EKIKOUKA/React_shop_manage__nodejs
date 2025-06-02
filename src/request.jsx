@@ -1,5 +1,5 @@
 export default function request(url, data = {}) {
-    return fetch(`/shop_sample/api/${url}`, {　// http://133.242.132.37/
+    return fetch(`http://133.242.132.37/shop_sample/api/${url}`, {　// http://133.242.132.37/
         method: "POST",
         headers: {
             "Content-Type": "application/json"
