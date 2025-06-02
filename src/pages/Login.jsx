@@ -1,10 +1,11 @@
 import React from 'react';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Checkbox, Form, Input, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import request from "../request.jsx";
 
 const Login = () => {
     const navigate = useNavigate();
+    const [messageApi, contextHolder] = message.useMessage();
 
     const onFinish = values => {
         console.log('Success:', values);
@@ -13,7 +14,22 @@ const Login = () => {
             password: values.password
         }).then(res => {
             console.log("request res: ", res);
-
+            if (!res.success) {
+                console.log("error request res: ", res);
+                messageApi.open({
+                    type: 'error',
+                    content: 'アカンウトかパウワードが間違った！',
+                });
+            } else {
+                console.log("success request res: ", res);
+                messageApi.open({
+                    type: 'success',
+                    content: 'ログイン成功！',
+                });
+                setTimeout(() => {
+                    navigate('/')
+                }, 1200)
+            }
         });
     };
     const onFinishFailed = errorInfo => {
@@ -22,6 +38,7 @@ const Login = () => {
 
     return (
         <div style={{ padding: 100, textAlign: 'center' }}>
+            {contextHolder}
             <Form
                 name="basic"
                 labelCol={{ span: 8 }}
@@ -32,19 +49,21 @@ const Login = () => {
                 onFinishFailed={onFinishFailed}
                 autoComplete="true"
             >
+                w@zce.me
                 <Form.Item
                     label="アカンウト"
                     name="username"
                     rules={[{ required: true, message: 'Please input your username!' }]}
                 >
-                    <Input />
+                    <Input placeholder="アカンウト" />
                 </Form.Item>
+                $2a$08$lV0Gr4AKx7xH7cCU4KCGCOikNzGPaWIpw9W7A9BONIxoJ2.hGC9qi
                 <Form.Item
                     label="パウワード"
                     name="password"
                     rules={[{ required: true, message: 'Please input your password!' }]}
                 >
-                    <Input.Password />
+                    <Input.Password placeholder="パウワード" />
                 </Form.Item>
                 <Form.Item label={null}>
                     <Button type="primary" htmlType="submit">
