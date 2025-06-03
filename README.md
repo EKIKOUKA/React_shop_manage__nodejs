@@ -1,6 +1,6 @@
 # React + Vite + Ant Designのショップサンプル、Node.jsとMySqlとNginxをサポートしている
 ## ウェブサイトアドレス： http://133.242.132.37/shop_sample/#/goods
-<img width="1222" alt="スクリーンショット 0007-05-20 23 55 58" src="https://github.com/user-attachments/assets/3171fcae-02a1-4a3c-a648-cd4cb851f404" />
+<img width="1222" alt="スクリーンショット 0007-05-20 23 55 58" src="https://github.com/user-attachments/assets/69028c70-d900-4229-9697-cd2de3d720f5" />
 
 
 ## Nodejs

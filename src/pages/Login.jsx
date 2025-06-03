@@ -22,6 +22,11 @@ const Login = () => {
                 });
             } else {
                 console.log("success request res: ", res);
+                localStorage.setItem("userInfo", JSON.stringify({
+                    username: res?.userInfo.username,
+                    user_email: res?.userInfo.user_email,
+                }));
+                console.log(JSON.parse(localStorage.getItem("userInfo")))
                 messageApi.open({
                     type: 'success',
                     content: 'ログイン成功！',
@@ -49,7 +54,7 @@ const Login = () => {
                 onFinishFailed={onFinishFailed}
                 autoComplete="true"
             >
-                w@zce.me
+                i@zce.me
                 <Form.Item
                     label="アカンウト"
                     name="username"
@@ -57,7 +62,7 @@ const Login = () => {
                 >
                     <Input placeholder="アカンウト" />
                 </Form.Item>
-                $2a$08$lV0Gr4AKx7xH7cCU4KCGCOikNzGPaWIpw9W7A9BONIxoJ2.hGC9qi
+                $2a$08$09nUxs.9czzXc4JZJTOdteeXSd/mxZVg96AhqciGbTMB6cfbGUWC2
                 <Form.Item
                     label="パウワード"
                     name="password"

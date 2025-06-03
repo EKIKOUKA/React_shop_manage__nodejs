@@ -1,11 +1,12 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Layout, Menu } from 'antd';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import {Outlet, useNavigate, useLocation} from 'react-router-dom';
 import {
     ShoppingCartOutlined,
     OrderedListOutlined,
     UserOutlined, MailOutlined, AppstoreOutlined, SettingOutlined,
 } from '@ant-design/icons';
+import systemLogo from "../assets/vite.svg"
 
 const { Sider, Content } = Layout;
 
@@ -51,23 +52,49 @@ const MainLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const userName = JSON.parse(localStorage.getItem("userInfo"))?.username || null
+
     return (
-        <Layout style={{ minHeight: '100vh' }}>
-            <Sider>
-                <Menu
-                    theme="dark"
-                    mode="inline"
-                    selectedKeys={[location.pathname.replace('/', '')]}
-                    onClick={({ key }) => navigate(`/${key}`)}
-                    items={menuItems}
-                />
-            </Sider>
-            <Layout>
-                <Content style={{ margin: '16px' }}>
-                    <Outlet />
-                </Content>
+        <>
+            <div style={{ backgroundColor: '#000', height: '7vh', lineHeight: '7vh', display: 'flex', justifyContent: 'space-between'}} className={"header"}>
+                <div className="system-name" style={{margin: '0 10px 0 20px'}}>
+                    <img src={systemLogo} className="logo" />
+                    <span style={{color: '#FFF', marginLeft: '10px'}}>ショップ管理システム</span>
+                </div>
+                <div　style={{color: 'cornflowerblue', marginRight: '15px', }} className={"logo"}>
+                    { !userName &&
+                        <div onClick={() => navigate('/login')}>登録</div>
+                    }
+                    { userName &&
+                        <div style={{
+                            color: '#FFF',
+                            backgroundColor: 'cornflowerblue',
+                            borderRadius: '50%',
+                            width: '6vh',
+                            height: '6vh',
+                            lineHeight: '6vh',
+                            textAlign: 'center'
+                        }}>{userName}</div>
+                    }
+                </div>
+            </div>
+            <Layout style={{ minHeight: '93vh' }}>
+                <Sider>
+                    <Menu
+                        theme="dark"
+                        mode="inline"
+                        selectedKeys={[location.pathname.replace('/', '')]}
+                        onClick={({ key }) => navigate(`/${key}`)}
+                        items={menuItems}
+                    />
+                </Sider>
+                <Layout>
+                    <Content style={{ margin: '16px' }}>
+                        <Outlet />
+                    </Content>
+                </Layout>
             </Layout>
-        </Layout>
+        </>
     );
 };
 
