@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import { Layout, Menu } from 'antd';
+import {Layout, Menu, Popconfirm} from 'antd';
 import {Outlet, useNavigate, useLocation} from 'react-router-dom';
 import {
     ShoppingCartOutlined,
@@ -54,6 +54,11 @@ const MainLayout = () => {
 
     const userName = JSON.parse(localStorage.getItem("userInfo"))?.username || null
 
+    const handleSignout = () => {
+        localStorage.removeItem("userInfo")
+        navigate('/')
+    }
+
     return (
         <>
             <div style={{ backgroundColor: '#000', height: '7vh', lineHeight: '7vh', display: 'flex', justifyContent: 'space-between'}} className={"header"}>
@@ -61,20 +66,14 @@ const MainLayout = () => {
                     <img src={systemLogo} className="logo" />
                     <span style={{color: '#FFF', marginLeft: '10px'}}>ショップ管理システム</span>
                 </div>
-                <div　style={{color: 'cornflowerblue', marginRight: '15px', }} className={"logo"}>
+                <div style={{color: '#FFF', marginRight: '15px', textDecoration: "underline", cursor: "pointer" }} className={"logo"}>
                     { !userName &&
                         <div onClick={() => navigate('/login')}>登録</div>
                     }
                     { userName &&
-                        <div style={{
-                            color: '#FFF',
-                            backgroundColor: 'cornflowerblue',
-                            borderRadius: '50%',
-                            width: '6vh',
-                            height: '6vh',
-                            lineHeight: '6vh',
-                            textAlign: 'center'
-                        }}>{userName}</div>
+                        <Popconfirm title="サインアウト?" cancelText="キャンセル" okText="確定" onConfirm={() => handleSignout()}>
+                            {userName}
+                        </Popconfirm>
                     }
                 </div>
             </div>

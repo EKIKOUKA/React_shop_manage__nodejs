@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Login from './pages/Login.jsx';
 import MainLayout from './pages/MainLayout.jsx';
 import Goods from './pages/Goods.jsx';
+import Home from './pages/Home.jsx';
 // import Orders from './pages/Orders';
 // import Users from './pages/Users';
 import 'antd/dist/reset.css';
@@ -14,6 +15,7 @@ function App() {
         <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<MainLayout />}>
+                <Route index element={<Home />} />
                 <Route path="goods" element={<Goods />} />
                 {/*<Route path="orders" element={<Orders />} />*/}
                 {/*<Route path="users" element={<Users />} />*/}
