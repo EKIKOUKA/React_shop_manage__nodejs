@@ -1,11 +1,7 @@
-import React, {useEffect} from 'react';
-import {Layout, Menu, Popconfirm} from 'antd';
-import {Outlet, useNavigate, useLocation} from 'react-router-dom';
-import {
-    ShoppingCartOutlined,
-    OrderedListOutlined,
-    UserOutlined, MailOutlined, AppstoreOutlined, SettingOutlined,
-} from '@ant-design/icons';
+import React from 'react';
+import { Layout, Menu, Popconfirm } from 'antd';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { ShoppingCartOutlined, AppstoreOutlined } from '@ant-design/icons';
 import systemLogo from "../assets/vite.svg"
 
 const { Sider, Content } = Layout;
