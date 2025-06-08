@@ -62,7 +62,7 @@ const MainLayout = () => {
     return (
         <>
             <div style={{ backgroundColor: '#000', height: '7vh', lineHeight: '7vh', display: 'flex', justifyContent: 'space-between'}} className={"header"}>
-                <div className="system-name" style={{margin: '0 10px 0 20px'}}>
+                <div onClick={() => navigate('/')} className="system-name" style={{margin: '0 10px 0 20px', cursor: 'pointer'}}>
                     <img src={systemLogo} className="logo" />
                     <span style={{color: '#FFF', marginLeft: '10px'}}>ショップ管理システム</span>
                 </div>

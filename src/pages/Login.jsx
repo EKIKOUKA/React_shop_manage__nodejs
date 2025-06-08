@@ -49,12 +49,15 @@ const Login = () => {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
                 style={{ maxWidth: 600, margin: "120px auto" }}
-                initialValues={{ remember: true }}
+                initialValues={{
+                    remember: true,
+                    username: 'i@zce.me',
+                    password: '$2a$08$09nUxs.9czzXc4JZJTOdteeXSd/mxZVg96AhqciGbTMB6cfbGUWC2',
+                }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="true"
             >
-                i@zce.me
                 <Form.Item
                     label="アカンウト"
                     name="username"
@@ -62,7 +65,6 @@ const Login = () => {
                 >
                     <Input placeholder="アカンウト" />
                 </Form.Item>
-                $2a$08$09nUxs.9czzXc4JZJTOdteeXSd/mxZVg96AhqciGbTMB6cfbGUWC2
                 <Form.Item
                     label="パウワード"
                     name="password"
