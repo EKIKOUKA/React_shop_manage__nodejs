@@ -1,17 +1,17 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import  { Spin } from "antd";
-import RequireAuth from './component/RequireAuth.jsx';
-import MainLayout from './pages/MainLayout.jsx';
-const Login = lazy(() => import('./pages/Login.jsx'));
+import RequireAuth from './component/RequireAuth';
+import MainLayout from './pages/MainLayout';
+const Login = lazy(() => import('./pages/Login'));
 
-const Goods = lazy(() => import('./pages/Goods.jsx'));
-const Home = lazy(() => import('./pages/Home.jsx'));
+const Goods = lazy(() => import('./pages/Goods'));
+const Home = lazy(() => import('./pages/Home'));
 // import Orders from './pages/Orders';
 // import Users from './pages/Users';
 import 'antd/dist/reset.css';
 
-function App() {
+const App: React.FC = () => {
 
     return (
         <Suspense fallback={

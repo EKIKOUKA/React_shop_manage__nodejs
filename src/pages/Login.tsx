@@ -1,20 +1,20 @@
 import React from 'react';
 import { Button, Form, Input, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import request from "../request.jsx";
+import request from "../request";
 
 const Login = () => {
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
 
-    const onFinish = values => {
+    const onFinish = (values: { username: string, password: string }) => {
         console.log('Success:', values);
         request("login", {
             username: values.username,
             password: values.password
         }).then(res => {
             console.log("request res: ", res);
-            if (!res.success) {
+            if (res.status !== 200) {
                 console.log("error request res: ", res);
                 messageApi.open({
                     type: 'error',
@@ -26,7 +26,7 @@ const Login = () => {
                     username: res?.userInfo.username,
                     user_email: res?.userInfo.user_email,
                 }));
-                console.log(JSON.parse(localStorage.getItem("userInfo")))
+                console.log(JSON.parse(localStorage.getItem("userInfo")!))
                 messageApi.open({
                     type: 'success',
                     content: 'ログイン成功！',
@@ -37,7 +37,7 @@ const Login = () => {
             }
         });
     };
-    const onFinishFailed = errorInfo => {
+    const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
 

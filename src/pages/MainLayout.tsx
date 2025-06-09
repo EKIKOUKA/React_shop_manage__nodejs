@@ -2,11 +2,12 @@ import React from 'react';
 import { Layout, Menu, Popconfirm } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingCartOutlined, AppstoreOutlined } from '@ant-design/icons';
+import type { MenuProps } from 'antd';
 import systemLogo from "../assets/vite.svg"
-
 const { Sider, Content } = Layout;
 
-const menuItems = [
+type MenuItem = Required<MenuProps>['items'][number];
+const items: MenuItem[] = [
     {
         key: 'sub1',
         label: 'ユーザー管理',
@@ -48,7 +49,12 @@ const MainLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const userName = JSON.parse(localStorage.getItem("userInfo"))?.username || null
+    let userName: string | null = null;
+    try {
+        userName = JSON.parse(localStorage.getItem("userInfo")!)?.username || null;
+    } catch {
+        userName = null;
+    }
 
     const handleSignout = () => {
         localStorage.removeItem("userInfo")
@@ -57,7 +63,7 @@ const MainLayout = () => {
 
     return (
         <>
-            <div style={{ backgroundColor: '#000', height: '7vh', lineHeight: '7vh', display: 'flex', justifyContent: 'space-between'}} className={"header"}>
+            <div style={{ backgroundColor: '#000', height: '5vh', lineHeight: '5vh', display: 'flex', justifyContent: 'space-between'}} className={"header"}>
                 <div onClick={() => navigate('/')} className="system-name" style={{margin: '0 10px 0 20px', cursor: 'pointer'}}>
                     <img src={systemLogo} className="logo" />
                     <span style={{color: '#FFF', marginLeft: '10px'}}>ショップ管理システム</span>
@@ -73,14 +79,14 @@ const MainLayout = () => {
                     }
                 </div>
             </div>
-            <Layout style={{ minHeight: '93vh' }}>
+            <Layout style={{ minHeight: '95vh' }}>
                 <Sider>
                     <Menu
                         theme="dark"
                         mode="inline"
                         selectedKeys={[location.pathname.replace('/', '')]}
                         onClick={({ key }) => navigate(`/${key}`)}
-                        items={menuItems}
+                        items={items}
                     />
                 </Sider>
                 <Layout>
