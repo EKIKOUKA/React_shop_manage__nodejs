@@ -22,6 +22,7 @@ const Login = () => {
                 });
             } else {
                 console.log("success request res: ", res);
+                localStorage.setItem('token', res?.token);
                 localStorage.setItem("userInfo", JSON.stringify({
                     username: res?.userInfo.username,
                     user_email: res?.userInfo.user_email,

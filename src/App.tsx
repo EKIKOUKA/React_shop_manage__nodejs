@@ -15,7 +15,7 @@ const App: React.FC = () => {
 
     return (
         <Suspense fallback={
-            <Spin tip="読み込み中...">
+            <Spin className={"loading-spin"} tip="読み込み中...">
                 <div></div>
             </Spin>
         }>
