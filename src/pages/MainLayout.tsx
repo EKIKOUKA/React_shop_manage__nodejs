@@ -58,6 +58,7 @@ const MainLayout = () => {
 
     const handleSignout = () => {
         localStorage.removeItem("userInfo")
+        localStorage.removeItem("token")
         navigate('/')
     }
 

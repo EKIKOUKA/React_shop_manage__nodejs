@@ -8,7 +8,7 @@ const Login = lazy(() => import('./pages/Login'));
 const Goods = lazy(() => import('./pages/Goods'));
 const Home = lazy(() => import('./pages/Home'));
 // import Orders from './pages/Orders';
-// import Users from './pages/Users';
+const Users = lazy(() => import ('./pages/Users'));
 import 'antd/dist/reset.css';
 
 const App: React.FC = () => {
@@ -33,7 +33,11 @@ const App: React.FC = () => {
                         </RequireAuth>
                     } />
                     {/*<Route path="orders" element={<Orders />} />*/}
-                    {/*<Route path="users" element={<Users />} />*/}
+                    <Route path="users" element={
+                        <RequireAuth>
+                            <Users />
+                        </RequireAuth>
+                    } />
                 </Route>
             </Routes>
         </Suspense>
