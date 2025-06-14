@@ -13,7 +13,9 @@ interface DataType {
     name: string;
     gender: string;
     email: string;
-    id: string;
+    id: number;
+    avatar: string;
+    city: string;
 }
 
 interface TableParams {
@@ -25,13 +27,13 @@ interface TableParams {
 
 const columns: ColumnsType<DataType> = [
     {
-        title: 'Name',
+        title: '名前',
         dataIndex: 'name',
         sorter: true,
         width: '20%',
     },
     {
-        title: 'Gender',
+        title: '性別',
         dataIndex: 'gender',
         filters: [
             { text: 'Male', value: 'male' },
@@ -40,11 +42,22 @@ const columns: ColumnsType<DataType> = [
         width: '20%',
     },
     {
-        title: 'Email',
+        title: "町",
+        dataIndex: "city"
+    },
+    {
+        title: 'メール',
         dataIndex: 'email',
     },
     {
-        title: 'Action',
+        title: "写真",
+        dataIndex: "avatar",
+        render: (_, record) => {
+            return <img src={record.avatar} style={{width: "89.64px"}}/>
+        }
+    },
+    {
+        title: '操作',
         key: 'action',
         width: "10%",
         render: (_, record) => (
