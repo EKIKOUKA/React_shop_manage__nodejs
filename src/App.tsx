@@ -4,7 +4,7 @@ import  { Spin } from "antd";
 import RequireAuth from './component/RequireAuth';
 import MainLayout from './pages/MainLayout';
 const Login = lazy(() => import('./pages/Login'));
-
+const TOTP_Secure = lazy(() => import('./pages/TOTP_Secure'));
 const Goods = lazy(() => import('./pages/Goods'));
 const Home = lazy(() => import('./pages/Home'));
 // import Orders from './pages/Orders';
@@ -21,6 +21,11 @@ const App: React.FC = () => {
         }>
             <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="TOTP_Secure" element={
+                    <RequireAuth>
+                        <TOTP_Secure />
+                    </RequireAuth>
+                } />
                 <Route path="/" element={<MainLayout />}>
                     <Route index element={
                         <RequireAuth>

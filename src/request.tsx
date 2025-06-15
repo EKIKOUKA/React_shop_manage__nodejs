@@ -13,6 +13,7 @@ export default function request(url: string, data: object = {}): Promise<any> {
         if (response.status === 200) {
             return response.json();
         } else if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem("userInfo");
             localStorage.removeItem("token");
             window.location.href = '#/login';
         }

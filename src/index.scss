@@ -19,3 +19,21 @@
         padding: 30px 70px 30px 0;
     }
 }
+
+
+.totp-code-container {
+    width: 350px;
+    margin: 0 auto;
+    border-radius: 8px;
+    border: 1px solid #d5d9d9;
+    padding: 14px 18px;
+    transform: translateY(89.64px);
+
+    .p {
+        font-size: 14px;
+    }
+
+    :where(.css-dev-only-do-not-override-mc1tut).ant-col-8 {
+        min-width: 100%;
+    }
+}

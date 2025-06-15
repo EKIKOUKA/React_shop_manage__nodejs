@@ -1,7 +1,7 @@
 # React + TypeScript + Vite + Ant Designのショップサンプル、Node.jsとMySqlとNginxをサポートしている
 ## ウェブサイトアドレス： http://133.242.132.37/shop_sample/#/goods
 <img width="1222" alt="スクリーンショット 0007-05-20 23 55 58" src="https://github.com/user-attachments/assets/69028c70-d900-4229-9697-cd2de3d720f5" />
-
+<img width="751" alt="スクリーンショット 0007-06-15 20 37 54" src="https://github.com/user-attachments/assets/f0856ed5-2ba8-452c-93eb-a1c92746498f" />
 
 ## Nginx 配置
 ### sudo vi /etc/nginx/sites-available/default

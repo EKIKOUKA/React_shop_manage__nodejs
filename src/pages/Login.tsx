@@ -23,8 +23,8 @@ const Login = () => {
                 });
             } else {
                 console.log("success request res: ", res);
-                localStorage.setItem('token', res?.token);
                 localStorage.setItem("userInfo", JSON.stringify({
+                    userId: res?.userInfo.userId,
                     username: res?.userInfo.username,
                     user_email: res?.userInfo.user_email,
                 }));
@@ -33,9 +33,16 @@ const Login = () => {
                     type: 'success',
                     content: 'ログイン成功！',
                 });
-                setTimeout(() => {
-                    navigate('/')
-                }, 1200)
+                if (res?.userInfo?.totp_secret) {
+                    setTimeout(() => {
+                        navigate('/TOTP_Secure')
+                    }, 1200)
+                } else {
+                    localStorage.setItem('token', res?.userInfo.token);
+                    setTimeout(() => {
+                        navigate('/')
+                    }, 1200)
+                }
             }
         });
     };
@@ -55,8 +62,8 @@ const Login = () => {
                     wrapperCol={{ span: 16 }}
                     initialValues={{
                         remember: true,
-                        username: 'i@zce.me',
-                        password: '$2a$08$09nUxs.9czzXc4JZJTOdteeXSd/mxZVg96AhqciGbTMB6cfbGUWC2',
+                        username: 'test',
+                        password: '123456',
                     }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
