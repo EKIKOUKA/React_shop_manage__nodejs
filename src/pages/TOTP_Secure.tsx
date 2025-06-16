@@ -8,7 +8,7 @@ const TOTP_Secure = () => {
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
 
-    const onFinish = (values: { token: string }) => {
+    const onFinish = (values: { code: string }) => {
         console.log('Success:', values);
         let userId = JSON.parse(localStorage.getItem("userInfo")!)?.userId || null
         // fetch(`http://133.242.132.37/shop_sample/api/generate-secret?userId=${userId}`, {
@@ -74,7 +74,7 @@ const TOTP_Secure = () => {
                     >
                         <Input type="tel" autoComplete="on" name="otpCode" placeholder="ワンタイムパスワード" />
                     </Form.Item>
-                    <Form.Item label={null}>
+                    <Form.Item className={"submit-btn"} label={null}>
                         <Button type="primary" htmlType="submit">ログイン</Button>
                     </Form.Item>
                 </Form>

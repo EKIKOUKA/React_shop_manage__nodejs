@@ -58,6 +58,7 @@ const Login = () => {
                 <Form
                     className={"login-form"}
                     name="basic"
+                    layout="vertical"
                     labelCol={{ span: 8 }}
                     wrapperCol={{ span: 16 }}
                     initialValues={{
@@ -83,7 +84,7 @@ const Login = () => {
                     >
                         <Input.Password placeholder="パウワード" />
                     </Form.Item>
-                    <Form.Item label={null}>
+                    <Form.Item className={"signin-btn"} label={null}>
                         <Button type="primary" htmlType="submit">
                             登録
                         </Button>
