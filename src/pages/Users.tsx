@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { GetProp, TableProps } from 'antd';
 import { Table, Button, Input } from 'antd';
 import { EditOutlined, DeleteOutlined, SettingOutlined } from '@ant-design/icons';
+import request from "../request"
 import type { AnyObject } from 'antd/es/_util/type';
 import type { SorterResult } from 'antd/es/table/interface';
 const { Search } = Input;
@@ -10,12 +11,11 @@ type ColumnsType<T extends object = object> = TableProps<T>['columns'];
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
 
 interface DataType {
-    name: string;
+    username: string;
     gender: string;
     email: string;
-    id: number;
     avatar: string;
-    city: string;
+    user_id: number;
 }
 
 interface TableParams {
@@ -28,32 +28,35 @@ interface TableParams {
 const columns: ColumnsType<DataType> = [
     {
         title: '名前',
-        dataIndex: 'name',
+        dataIndex: 'username',
         sorter: true,
-        width: '20%',
+        width: '20%'
     },
     {
         title: '性別',
         dataIndex: 'gender',
         filters: [
             { text: 'Male', value: 'male' },
-            { text: 'Female', value: 'female' },
+            { text: 'Female', value: 'female' }
         ],
         width: '20%',
+        render: (_, record) => {
+            return <span> { record.user_id == 1 && record.gender == "male" ? "両百斤真男兒" : record.gender } </span>
+        }
     },
     {
-        title: "町",
-        dataIndex: "city"
+        title: "学歴",
+        dataIndex: "user_xueli"
     },
     {
         title: 'メール',
-        dataIndex: 'email',
+        dataIndex: 'user_email'
     },
     {
         title: "写真",
         dataIndex: "avatar",
         render: (_, record) => {
-            return <img src={record.avatar} style={{width: "89.64px"}}/>
+            return <img src={record.avatar} style={{width: "89.64px"}} />
         }
     },
     {
@@ -66,53 +69,12 @@ const columns: ColumnsType<DataType> = [
                 <Button style={{marginRight: "10px"}} danger shape="circle" icon={<DeleteOutlined />} />
                 <Button style={{marginRight: "10px"}} shape="circle" icon={<SettingOutlined />} />
             </>
-        ),
-    },
+        )
+    }
 ];
 
 type SearchProps = GetProps<typeof Input.Search>;
 const onSearch: SearchProps['onSearch'] = (value, _e, info) => console.log(info?.source, value);
-
-const toURLSearchParams = <T extends AnyObject>(record: T) => {
-    const params = new URLSearchParams();
-    for (const [key, value] of Object.entries(record)) {
-        params.append(key, value);
-    }
-    return params;
-};
-
-const getRandomuserParams = (params: TableParams) => {
-    const { pagination, filters, sortField, sortOrder, ...restParams } = params;
-    const result: Record<string, any> = {};
-
-    // https://github.com/mockapi-io/docs/wiki/Code-examples#pagination
-    result.limit = pagination?.pageSize;
-    result.page = pagination?.current;
-
-    // https://github.com/mockapi-io/docs/wiki/Code-examples#filtering
-    if (filters) {
-        Object.entries(filters).forEach(([key, value]) => {
-            if (value !== undefined && value !== null) {
-                result[key] = value;
-            }
-        });
-    }
-
-    // https://github.com/mockapi-io/docs/wiki/Code-examples#sorting
-    if (sortField) {
-        result.orderby = sortField;
-        result.order = sortOrder === 'ascend' ? 'asc' : 'desc';
-    }
-
-    // 处理其他参数
-    Object.entries(restParams).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-            result[key] = value;
-        }
-    });
-
-    return result;
-};
 
 const Users: React.FC = () => {
     const [data, setData] = useState<DataType[]>();
@@ -120,27 +82,24 @@ const Users: React.FC = () => {
     const [tableParams, setTableParams] = useState<TableParams>({
         pagination: {
             current: 1,
-            pageSize: 10,
-        },
+            pageSize: 10
+        }
     });
-
-    const params = toURLSearchParams(getRandomuserParams(tableParams));
 
     const fetchData = () => {
         setLoading(true);
-        fetch(`https://660d2bd96ddfa2943b33731c.mockapi.io/api/users?${params.toString()}`)
-            .then((res) => res.json())
-            .then((res) => {
-                setData(Array.isArray(res) ? res : []);
-                setLoading(false);
-                setTableParams({
-                    ...tableParams,
-                    pagination: {
-                        ...tableParams.pagination,
-                        total: 1000,
-                    },
-                });
+        request("getUserList").then(res => {
+            console.log("res: ", res)
+            setData(Array.isArray(res.data) ? res.data : []);
+            setLoading(false);
+            setTableParams({
+                ...tableParams,
+                pagination: {
+                    ...tableParams.pagination,
+                    total: res.data.length
+                }
             });
+        });
     };
 
     useEffect(fetchData, [
@@ -178,14 +137,14 @@ const Users: React.FC = () => {
             <Button type="primary" size="large">ユーザーを追加</Button>
             <Table<DataType>
                 columns={columns}
-                rowKey={(record) => record.id}
+                rowKey={(record) => record.user_id}
                 dataSource={data}
                 pagination={tableParams.pagination}
                 loading={loading}
                 onChange={handleTableChange}
             />
         </>
-    );
+    )
 };
 
 export default Users;
