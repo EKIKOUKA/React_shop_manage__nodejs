@@ -27,6 +27,7 @@ const Login = () => {
                     userId: res?.userInfo.userId,
                     username: res?.userInfo.username,
                     user_email: res?.userInfo.user_email,
+                    avatar: res?.userInfo.avatar,
                 }));
                 console.log(JSON.parse(localStorage.getItem("userInfo")!))
                 messageApi.open({

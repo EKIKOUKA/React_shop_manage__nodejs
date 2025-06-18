@@ -49,11 +49,11 @@ const MainLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    let userName: string | null = null;
+    let userAvatar: string | null = null;
     try {
-        userName = JSON.parse(localStorage.getItem("userInfo")!)?.username || null;
+        userAvatar = JSON.parse(localStorage.getItem("userInfo")!)?.avatar || null;
     } catch {
-        userName = null;
+        userAvatar = null;
     }
 
     const handleSignout = () => {
@@ -70,12 +70,12 @@ const MainLayout = () => {
                     <span style={{color: '#FFF', marginLeft: '10px'}}>ショップ管理システム</span>
                 </div>
                 <div style={{color: '#FFF', marginRight: '15px', textDecoration: "underline", cursor: "pointer" }} className={"logo"}>
-                    { !userName &&
+                    { !userAvatar &&
                         <div onClick={() => navigate('/login')}>登録</div>
                     }
-                    { userName &&
+                    { userAvatar &&
                         <Popconfirm title="サインアウト?" cancelText="キャンセル" okText="確定" onConfirm={() => handleSignout()}>
-                            {userName}
+                            <img style={{height: "80%", borderRadius: "50%"}} src={userAvatar} />
                         </Popconfirm>
                     }
                 </div>
