@@ -20,14 +20,6 @@ const items: MenuItem[] = [
         ]
     },
     {
-        key: 'sub2',
-        label: '権限管理',
-        icon: <AppstoreOutlined />,
-        children: [
-            { key: '5', label: '権限リスト' }
-        ]
-    },
-    {
         key: 'sub3',
         label: '商品管理',
         icon: <AppstoreOutlined />,

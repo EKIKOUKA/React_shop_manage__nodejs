@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import request from "../request"
 import { Button, Table, Input, Modal, Space, Popconfirm } from 'antd';
 import type { TableColumnsType } from 'antd';
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import timestampFormat from "../utils/timestampFormat"
 
 const Goods = () => {
     const hasFetched = useRef(false);
@@ -46,15 +48,30 @@ const Goods = () => {
           title: '商品名',
           dataIndex: 'goods_name',
           key: 'goods_id'
-        },
-        {
+        }, {
+          title: '商品価格',
+          dataIndex: 'goods_price'
+        }, {
+          title: '商品重量',
+          dataIndex: 'goods_weight'
+        }, {
+          title: '商品数量',
+          dataIndex: 'goods_number'
+        }, {
+            title: '作成日',
+            width: "110px",
+            dataIndex: 'add_time',
+            render: (_: any, record: any) => (
+                <span>{ timestampFormat(record.add_time) }</span>
+            )
+        }, {
             title: '操作',
             key: 'action',
             render: (_: any, record: any) => (
                 <Space size="middle">
-                    <a onClick={() => showModal("update", record)}>編集</a>
+                    <Button onClick={() => showModal("update", record)} type="primary" icon={<EditOutlined />}>編集</Button>
                     <Popconfirm title="削除?" cancelText="キャンセル" okText="確定" onConfirm={() => handleDelete(record.goods_id)}>
-                        <a>削除</a>
+                        <Button danger icon={<DeleteOutlined />}>削除</Button>
                     </Popconfirm>
                 </Space>
             )

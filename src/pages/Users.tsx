@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import type { GetProp, TableProps } from 'antd';
-import { Table, Button, Input } from 'antd';
-import { EditOutlined, DeleteOutlined, SettingOutlined } from '@ant-design/icons';
+import { Table, Button, Input, Modal, Form, Switch, Popconfirm, Select } from 'antd';
+import { EditOutlined, DeleteOutlined, SettingOutlined, CheckOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import request from "../request"
-import type { AnyObject } from 'antd/es/_util/type';
 import type { SorterResult } from 'antd/es/table/interface';
-const { Search } = Input;
-import type { GetProps } from 'antd';
+import type { GetProps, FormProps } from 'antd';
 type ColumnsType<T extends object = object> = TableProps<T>['columns'];
 type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
 
-interface DataType {
+interface userDataType {
+    isActive: false | true;
     username: string;
     gender: string;
     email: string;
     avatar: string;
     user_id: number;
+    user_edu: number
 }
 
 interface TableParams {
@@ -25,59 +25,110 @@ interface TableParams {
     filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
 }
 
-const columns: ColumnsType<DataType> = [
-    {
-        title: '名前',
-        dataIndex: 'username',
-        sorter: true,
-        width: '20%'
-    },
-    {
-        title: '性別',
-        dataIndex: 'gender',
-        filters: [
-            { text: 'Male', value: 'male' },
-            { text: 'Female', value: 'female' }
-        ],
-        width: '20%',
-        render: (_, record) => {
-            return <span> { record.user_id == 1 && record.gender == "male" ? "両百斤真男兒" : record.gender } </span>
-        }
-    },
-    {
-        title: "学歴",
-        dataIndex: "user_xueli"
-    },
-    {
-        title: 'メール',
-        dataIndex: 'user_email'
-    },
-    {
-        title: "写真",
-        dataIndex: "avatar",
-        render: (_, record) => {
-            return <img src={record.avatar} style={{width: "89.64px"}} />
-        }
-    },
-    {
-        title: '操作',
-        key: 'action',
-        width: "10%",
-        render: (_, record) => (
-            <>
-                <Button style={{marginRight: "10px"}} type="primary" shape="circle" icon={<EditOutlined />} />
-                <Button style={{marginRight: "10px"}} danger shape="circle" icon={<DeleteOutlined />} />
-                <Button style={{marginRight: "10px"}} shape="circle" icon={<SettingOutlined />} />
-            </>
-        )
-    }
-];
-
-type SearchProps = GetProps<typeof Input.Search>;
-const onSearch: SearchProps['onSearch'] = (value, _e, info) => console.log(info?.source, value);
+interface Education {
+    edu_id: number,
+    label: string,
+    value: string
+}
 
 const Users: React.FC = () => {
-    const [data, setData] = useState<DataType[]>();
+
+    const [open, setOpen] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [modalTitle, setModalTitle] = useState('');
+    const [educationList, setEducationList] = useState<Education[]>([])
+
+    const showModal = (status: 'add' | 'update', record: any) => {
+        setModalTitle(status == "add" ? "追加" : "更新")
+        setOpen(true);
+    };
+
+    const handleCancel = () => {
+        console.log('Clicked cancel button');
+        setOpen(false);
+        userForm.resetFields();
+    };
+
+    const handleActiveConfirm = (record: userDataType) => {
+        record.isActive = !record.isActive;
+        fetchData()
+    }
+
+    const columns: ColumnsType<userDataType> = [
+        {
+            title: 'ID',
+            dataIndex: 'user_id',
+            sorter: true
+        },
+        {
+            title: '名前',
+            dataIndex: 'username',
+            sorter: true
+        },
+        {
+            title: '性別',
+            dataIndex: 'gender',
+            filters: [
+                { text: 'Male', value: 'male' },
+                { text: 'Female', value: 'female' }
+            ],
+            render: (_, record) => {
+                return <span> { record.user_id == 1 && record.gender == "male" ? "両百斤真男兒" : record.gender == "female" ? "女性" : "男性" } </span>
+            }
+        },
+        {
+            title: "学歴",
+            dataIndex: "user_edu",
+            render: (_, record) => {
+                const edu = educationList.find(e => e.edu_id === record.user_edu)
+                return edu?.label
+            }
+        },
+        {
+            title: 'メール',
+            dataIndex: 'user_email'
+        },
+        {
+            title: '状態',
+            dataIndex: 'isActive',
+            render: (_, record) => {
+                return (
+                    <Popconfirm title="変更?" cancelText="キャンセル" okText="確定" onConfirm={() => handleActiveConfirm(record) }>
+                        <Switch
+                            checkedChildren={<CheckOutlined />}
+                            unCheckedChildren={<CloseOutlined />}
+                            checked={record.isActive}
+                        />
+                    </Popconfirm>
+                )
+            }
+        },
+        {
+            title: "写真",
+            dataIndex: "avatar",
+            render: (_, record) => {
+                return record.avatar
+                    ? <img src={record.avatar} style={{ width: "89.64px" }} />
+                    : null
+            }
+        },
+        {
+            title: '操作',
+            key: 'action',
+            width: "10%",
+            render: (_, record) => (
+                <>
+                    <Button onClick={() => showModal("update", record)} style={{marginRight: "10px"}} type="primary" shape="circle" icon={<EditOutlined />} />
+                    <Button style={{marginRight: "10px"}} danger shape="circle" icon={<DeleteOutlined />} />
+                    <Button style={{marginRight: "10px"}} shape="circle" icon={<SettingOutlined />} />
+                </>
+            )
+        }
+    ];
+
+    const [userForm] = Form.useForm();
+    const [searchForm] = Form.useForm();
+    const [data, setData] = useState<userDataType[]>();
     const [loading, setLoading] = useState(false);
     const [tableParams, setTableParams] = useState<TableParams>({
         pagination: {
@@ -85,20 +136,59 @@ const Users: React.FC = () => {
             pageSize: 10
         }
     });
-
-    const fetchData = () => {
-        setLoading(true);
-        request("getUserList").then(res => {
-            console.log("res: ", res)
+    const onFinishForm: FormProps<userDataType>['onFinish'] = (values) => {
+        console.log('onFinishForm Success:', values);
+        setConfirmLoading(true);
+        setTimeout(() => {
+            handleCancel();
+            setConfirmLoading(false);
+        }, 2000);
+    };
+    const onFinishFormFailed: FormProps<userDataType>['onFinishFailed'] = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
+    const onFinishSearch: FormProps<userDataType>['onFinish'] = (values) => {
+        console.log('onFinishSearch Success:', values);
+        console.log("searchForm: ", searchForm)
+        if (typeof values.isActive !== "undefined") {
+            (values as any).isActive = values.isActive ? 1 : 0;
+        }
+        request("getUserList", {
+            current: tableParams.pagination?.current,
+            pageSize: tableParams.pagination?.pageSize,
+            ...values
+        }).then(res => {
+            console.log("res", res);
             setData(Array.isArray(res.data) ? res.data : []);
-            setLoading(false);
             setTableParams({
                 ...tableParams,
                 pagination: {
                     ...tableParams.pagination,
-                    total: res.data.length
+                    total: res.total
                 }
             });
+            setLoading(false);
+        })
+    };
+    const searchFormReset = () => {
+        searchForm.resetFields();
+    }
+    const fetchData = () => {
+        setLoading(true);
+        request("getUserList", {
+            current: tableParams.pagination?.current,
+            pageSize: tableParams.pagination?.pageSize
+        }).then(res => {
+            console.log("res: ", res)
+            setData(Array.isArray(res.data) ? res.data : []);
+            setTableParams({
+                ...tableParams,
+                pagination: {
+                    ...tableParams.pagination,
+                    total: res.total
+                }
+            });
+            setLoading(false);
         });
     };
 
@@ -109,8 +199,18 @@ const Users: React.FC = () => {
         tableParams?.sortField,
         JSON.stringify(tableParams.filters),
     ]);
+    useEffect(() => {
+        request("getEducationList").then(res => {
+            console.log("getEducationList res: ", res)
+            setEducationList(res.data)
+        })
+    }, [])
+    useEffect(() => {
+        console.log("educationList changed:", educationList)
+    }, [educationList])
 
-    const handleTableChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter) => {
+    const handleTableChange: TableProps<userDataType>['onChange'] = (pagination, filters, sorter) => {
+        console.log("pagination: ", pagination)
         setTableParams({
             pagination,
             filters,
@@ -126,16 +226,96 @@ const Users: React.FC = () => {
 
     return (
         <>
-            <Search
-                placeholder="探す内容を入力"
-                allowClear
-                enterButton
-                size="large"
-                style={{ width: 300, marginBottom: "20px", marginRight: "10px" }}
-                onSearch={onSearch}
-            />
-            <Button type="primary" size="large">ユーザーを追加</Button>
-            <Table<DataType>
+            <Button onClick={() => showModal("add", null)} type="primary" size="large">ユーザーを追加</Button>
+            <Form form={searchForm} onFinish={onFinishSearch} initialValues={{ isActive: true }} layout="inline"
+                  className="table-demo-control-bar" style={{
+                    margin: "16px 0",
+                    background: "white",
+                    padding: "15px",
+                    borderRadius: "8px" }}>
+                <Form.Item label="名前" name="username">
+                    <Input placeholder="名前" allowClear />
+                </Form.Item>
+                <Form.Item label="性別" name="gender">
+                    <Select
+                        placeholder="性別"
+                        allowClear
+                        options={[
+                            { value: 'female', label: '女性' },
+                            { value: 'male', label: '男性' }
+                        ]}
+                    />
+                </Form.Item>
+                <Form.Item label="学歴" name="user_edu">
+                    <Select
+                        style={{ width: "154px" }}
+                        placeholder="学歴"
+                        allowClear
+                        fieldNames={{
+                            label: 'label',
+                            value: 'edu_id',
+                        }}
+                        options={educationList}
+                    />
+                </Form.Item>
+                <Form.Item label="メール" name="user_email">
+                    <Input placeholder="メール" allowClear />
+                </Form.Item>
+                <Form.Item label="状態" name="isActive" valuePropName="checked">
+                    <Switch
+                        checkedChildren={<CheckOutlined />}
+                        unCheckedChildren={<CloseOutlined />}
+                    />
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" iconPosition="end" icon={<SearchOutlined />} htmlType="submit" style={{ marginLeft: "89.64px" }}>探す</Button>
+                </Form.Item>
+                <Form.Item>
+                    <Button htmlType="button" onClick={ searchFormReset }>リセット</Button>
+                </Form.Item>
+            </Form>
+            <Modal
+                title={modalTitle}
+                footer={null}
+                open={open}
+                onCancel={handleCancel}
+            >
+                <Form
+                    name="basic"
+                    form={userForm}
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 16 }}
+                    style={{ maxWidth: 600 }}
+                    initialValues={{ remember: true }}
+                    onFinish={onFinishForm}
+                    onFinishFailed={onFinishFormFailed}
+                    autoComplete="off"
+                >
+                    <Form.Item<userDataType>
+                        label="Username"
+                        name="username"
+                        rules={[{ required: true, message: 'Please input your username!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item<userDataType>
+                        label="Email"
+                        name="email"
+                        rules={[{ required: true, message: 'Please input your password!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item<userDataType> name="avatar" valuePropName="checked" label={null}>
+                        Remember me
+                    </Form.Item>
+                    <Form.Item label={null}>
+                        <Button loading={confirmLoading} type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Table<userDataType>
                 columns={columns}
                 rowKey={(record) => record.user_id}
                 dataSource={data}
