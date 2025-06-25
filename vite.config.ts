@@ -7,9 +7,10 @@ export default defineConfig({
     server: {
         proxy: {
             '/shop_sample/api': {
-                target: 'http://localhost:3000', // Express 後端本地地址
+                target: 'https://www.makotodeveloper.website',
                 changeOrigin: true,
-                rewrite: path => path.replace(/^\/shop_sample\/api/, '') // 若你的後端是 '/api/login' 這種結構
+                rewrite: path => path.replace(/^\/shop_sample\/api/, '/shop_sample/api')
+
             }
         }
     }

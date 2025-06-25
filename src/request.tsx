@@ -1,7 +1,7 @@
 export default function request(url: string, data: object = {}): Promise<any> {
     const token = localStorage.getItem("token") || '';
 
-    return fetch(`/shop_sample/api/${url}`, {　// http://133.242.132.37/
+    return fetch(`/shop_sample/api/${url}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
