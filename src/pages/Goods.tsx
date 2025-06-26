@@ -50,13 +50,16 @@ const Goods = () => {
           key: 'goods_id'
         }, {
           title: '商品価格',
-          dataIndex: 'goods_price'
+          dataIndex: 'goods_price',
+          width: "88px"
         }, {
           title: '商品重量',
-          dataIndex: 'goods_weight'
+          dataIndex: 'goods_weight',
+          width: "88px"
         }, {
           title: '商品数量',
-          dataIndex: 'goods_number'
+          dataIndex: 'goods_number',
+          width: "88px"
         }, {
             title: '作成日',
             width: "110px",
