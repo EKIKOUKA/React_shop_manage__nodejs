@@ -1,26 +1,19 @@
 # React + TypeScript + Vite + Ant Designのショップ管理システムサンプル、Node.jsとMySqlとNginxをサポートしている
 ## ウェブサイトアドレス： https://www.makotodeveloper.website/shop_sample/
-<img width="1222" alt="スクリーンショット 0007-05-20 23 55 58" src="https://github.com/user-attachments/assets/69028c70-d900-4229-9697-cd2de3d720f5" />
-<img width="751" alt="スクリーンショット 0007-06-15 20 37 54" src="https://github.com/user-attachments/assets/f0856ed5-2ba8-452c-93eb-a1c92746498f" />
 
-## Nginx 配置
-### sudo vi /etc/nginx/sites-available/default
-```
-server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
+<img width="49%" src="https://github.com/user-attachments/assets/830068ae-5909-46f8-a15d-bd28442c3354" />
+<img width="49%" src="https://github.com/user-attachments/assets/fb73e851-a317-49b2-b18f-66377994a4b5" />
+<img width="49%" src="https://github.com/user-attachments/assets/70995af0-8a6e-4467-8043-de26f8a07168" />
+<img width="49%" src="https://github.com/user-attachments/assets/6f366619-65e1-4d09-8016-d3c5da1e2413" />
+<img width="49%" src="https://github.com/user-attachments/assets/52056c2c-3067-46eb-9afa-e283d1c6718b" />
+<img width="49%" src="https://github.com/user-attachments/assets/84881588-1bce-45f9-9607-450b1b6240be" />
+<img width="750" src="https://github.com/user-attachments/assets/f0856ed5-2ba8-452c-93eb-a1c92746498f" />
 
-        server_name 133.242.132.37 _;
+## Network Headers Status Code
+| ステータスコード | 意味（用途）                           |
+|------------------|----------------------------------------|
+| 401              | 認証されていません（トークン未提供）     |
+| 403              | アクセス禁止（トークン無効または期限切れ） |
+| 400              | 不正なリクエスト（パラメータ不足・誤り）   |
+| 500              | サーバーエラー（内部的な処理失敗）       |
 
-        location /shop_sample {
-            alias /home/debian/React_shop_manage__nodejs/dist/;
-            index index.html;
-            try_files $uri $uri/ /index.html;
-       }
-
-       location /shop_sample/api/ {
-          proxy_pass http://localhost:3000/;
-          proxy_set_header Host $host;
-       }
-}
-```

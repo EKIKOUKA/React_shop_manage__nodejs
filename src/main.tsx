@@ -6,9 +6,9 @@ import './index.scss'
 import App from './App'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
+    // <React.StrictMode>
         <HashRouter>
             <App />
         </HashRouter>
-    </React.StrictMode>
+    // </React.StrictMode>
 )

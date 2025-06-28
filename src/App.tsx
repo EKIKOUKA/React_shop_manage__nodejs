@@ -5,10 +5,11 @@ import RequireAuth from './component/RequireAuth';
 import MainLayout from './pages/MainLayout';
 const Login = lazy(() => import('./pages/Login'));
 const TOTP_Secure = lazy(() => import('./pages/TOTP_Secure'));
-const Goods = lazy(() => import('./pages/Goods'));
 const Home = lazy(() => import('./pages/Home'));
-// import Orders from './pages/Orders';
 const Users = lazy(() => import ('./pages/Users'));
+const Goods = lazy(() => import('./pages/Goods'));
+const Orders = lazy(() => import('./pages/Orders'));
+const TOTP_Setting = lazy(() => import('./pages/TOTP_Setting'));
 import 'antd/dist/reset.css';
 
 const App: React.FC = () => {
@@ -21,7 +22,7 @@ const App: React.FC = () => {
         }>
             <Routes>
                 <Route path="/login" element={<Login />} />
-                <Route path="TOTP_Secure" element={
+                <Route path="/TOTP_Secure" element={
                     <RequireAuth>
                         <TOTP_Secure />
                     </RequireAuth>
@@ -32,15 +33,24 @@ const App: React.FC = () => {
                             <Home />
                         </RequireAuth>
                     } />
+                    <Route path="users" element={
+                        <RequireAuth>
+                            <Users />
+                        </RequireAuth>
+                    } />
                     <Route path="goods" element={
                         <RequireAuth>
                             <Goods />
                         </RequireAuth>
                     } />
-                    {/*<Route path="orders" element={<Orders />} />*/}
-                    <Route path="users" element={
+                    <Route path="orders" element={
                         <RequireAuth>
-                            <Users />
+                            <Orders />
+                        </RequireAuth>
+                    } />
+                    <Route path="TOTP_Setting" element={
+                        <RequireAuth>
+                            <TOTP_Setting />
                         </RequireAuth>
                     } />
                 </Route>

@@ -9,27 +9,17 @@ const TOTP_Secure = () => {
     const [messageApi, contextHolder] = message.useMessage();
 
     const onFinish = (values: { code: string }) => {
-        console.log('Success:', values);
         let userId = JSON.parse(localStorage.getItem("userInfo")!)?.userId || null
-        // fetch(`http://133.242.132.37/shop_sample/api/generate-secret?userId=${userId}`, {
-        //     method: "GET"
-        // }).then(res => {
-        //     console.log("generate-secret res: ", res);
-        // })
-        // return
-        request("verify", {
+        request("verify-login-totp", {
             userId: userId,
             token: values.code
         }).then(res => {
-            console.log("request res: ", res);
-            if (res.status !== 200) {
-                console.log("error request res: ", res);
+            if (!res.success) {
                 messageApi.open({
                     type: 'error',
                     content: res.message,
                 });
             } else {
-                console.log("success request res: ", res);
                 localStorage.setItem('token', res?.token);
                 messageApi.open({
                     type: 'success',

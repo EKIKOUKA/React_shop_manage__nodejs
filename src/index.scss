@@ -1,8 +1,13 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 .loading-spin.ant-spin {
     max-height: 100vh !important;
     min-height: 100vh !important;
 }
-
 .login-container {
     text-align: center;
     max-width: 520px;
@@ -46,5 +51,32 @@
 
     :where(.css-dev-only-do-not-override-mc1tut).ant-col-8 {
         min-width: 100%;
+    }
+}
+
+.totp-setting-wrapper {
+    margin: 10vh auto;
+    width: 70%;
+
+    h1 {
+        margin-left: 40px;
+    }
+    .totp-setting-container {
+        background-color: white;
+        padding: 5vh;
+        border-radius: 25px;
+
+        .bar-code {
+            border: 1px solid #d5d9d9;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 25vh;
+            height: 25vh;
+            margin: 20px 0 10px;
+        }
+
+        .commit-btn {
+            margin-top: 10px;
+        }
     }
 }

@@ -1,49 +1,60 @@
 import React, { useState, useEffect, useRef } from "react";
 import request from "../request"
-import { Button, Table, Input, Modal, Space, Popconfirm } from 'antd';
-import type { TableColumnsType } from 'antd';
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import timestampFormat from "../utils/timestampFormat"
+import {Button, Table, Input, Modal, Space, Popconfirm, Form, InputNumber} from 'antd';
+import type { GetProp, TableProps, FormProps } from 'antd';
+import {EditOutlined, DeleteOutlined} from "@ant-design/icons";
+import timestampFormat from "../utils/timestampFormat";
+const { TextArea } = Input;
+import type {SorterResult} from "antd/es/table/interface";
+type ColumnsType<T extends object = object> = TableProps<T>['columns'];
+type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
+
+interface TableParams {
+    pagination?: TablePaginationConfig;
+    sortField?: SorterResult<any>['field'];
+    sortOrder?: SorterResult<any>['order'];
+    filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
+}
+interface goodsDataType {
+    goods_name: string;
+    goods_price: number;
+    goods_number: number;
+    goods_id: number;
+}
 
 const Goods = () => {
-    const hasFetched = useRef(false);
+    const [goodsForm] = Form.useForm();
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [modalTitle, setModalTitle] = useState('追加');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const showModal = (status: 'add' | 'update', record: any) => {
-        setIsModalOpen(true);
-        setFormStatus(status)
+    const showModal = (status: 'add' | 'update', record?: goodsDataType) => {
+        console.log("record: ", record)
+        setModalTitle(status == "add" ? "追加" : "更新")
         if (status === "update") {
-          setGoods_name(record.goods_name)
-          setRecord(record)
+            goodsForm.setFieldsValue(record);
         } else {
-          setGoods_name("");
-          setRecord({});
+            goodsForm.resetFields();
         }
-    };
-    const handleOk = () => {
-        if (formStatus === "add") {
-            handleAdd();
-        } else {
-            handleUpdate(goodsRecord)
-        }
-        setIsModalOpen(false);
-    };
-    const handleCancel = () => {
-        setIsModalOpen(false);
-        setGoods_name("");
-        setRecord({});
+        setIsModalOpen(true);
     };
 
-    const [goodsName, setGoods_name] = useState("");
-    const [goodsRecord, setRecord] = useState({});
-    const [formStatus, setFormStatus] = useState("");
     const [tableData, setTableData] = useState([]);
+    const [tableParams, setTableParams] = useState<TableParams>({
+        pagination: {
+            current: 1,
+            pageSize: 10,
+            showSizeChanger: true,
+            pageSizeOptions: [10, 20, 30, 50],
+            locale: { items_per_page: '件 / ページ' }
+        }
+    });
 
     interface DataType {
         goods_name: string;
         goods_id: number;
     }
-    const columns: TableColumnsType<DataType> = [
+    const columns: ColumnsType<DataType> = [
         {
           title: '商品名',
           dataIndex: 'goods_name',
@@ -51,10 +62,6 @@ const Goods = () => {
         }, {
           title: '商品価格',
           dataIndex: 'goods_price',
-          width: "88px"
-        }, {
-          title: '商品重量',
-          dataIndex: 'goods_weight',
           width: "88px"
         }, {
           title: '商品数量',
@@ -80,27 +87,13 @@ const Goods = () => {
             )
         }
     ];
-    const [tableParams, setTableParams] = useState({
-        pagination: {
-          current: 1,
-          pageSize: 10
-        }
-    });
-
-    useEffect(() => {
-        if (!hasFetched.current) {
-            hasFetched.current = true; // Set to true immediately
-            getGoodsList();
-        }
-    }, [tableParams.pagination.current, tableParams.pagination.pageSize]);
 
     const getGoodsList = () => {
         setLoading(true);
         request("getGoodsList").then(result => {
-            console.log("request data: ", result.data);
             setTableData(result.data);
             setLoading(false);
-            setTableParams(prevParams => ({ // Use functional update for setTableParams
+            setTableParams(prevParams => ({
                 ...prevParams,
                 pagination: {
                     ...prevParams.pagination,
@@ -109,80 +102,92 @@ const Goods = () => {
             }));
         })
     }
-    useEffect(() => {
-        if (hasFetched.current) {
-            getGoodsList();
+    useEffect(getGoodsList, [
+        tableParams.pagination?.current,
+        tableParams.pagination?.pageSize,
+        tableParams?.sortOrder,
+        tableParams?.sortField,
+        JSON.stringify(tableParams.filters),
+    ]);
+
+    const handleTableChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter) => {
+        setTableParams({
+            pagination,
+            filters,
+            sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
+            sortField: Array.isArray(sorter) ? undefined : sorter.field,
+        });
+
+        if (pagination.pageSize !== tableParams.pagination?.pageSize) {
+            setTableData([]);
         }
-    }, [tableParams.pagination.current, tableParams.pagination.pageSize]);
-
-    const handleTableChange = (
-        pagination: any,
-        filters: Record<string, any>,
-        sorter: any
-    ) => {
-        setTableParams(prevParams => { // Use functional update
-            const newParams = {
-                pagination,
-                filters,
-                sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
-                sortField: Array.isArray(sorter) ? undefined : sorter.field,
-            };
-            return newParams;
-        });
     };
-    const handleAdd = () => {
-        const newData = {
-            goods_name: goodsName
-        };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+        goodsForm.resetFields();
+    };
 
-        request("addGood", {
-            goods_name: newData.goods_name
-        }).then(result => {
-            console.log("request result: ", result);
+    const onFinishForm: FormProps<goodsDataType>['onFinish'] = (values) => {
+        setConfirmLoading(true);
+        request(modalTitle === "追加" ? "addGood" : "updateGood", values).then(result => {
+            handleCancel();
+            setConfirmLoading(false);
             getGoodsList()
-            setGoods_name("")
-            setIsModalOpen(false)
-        });
+        })
+    };
+    const onFinishFormFailed: FormProps<goodsDataType>['onFinishFailed'] = (errorInfo) => {
+        console.log('Failed:', errorInfo);
     };
     const handleDelete = (key: number) => {
         request("deleteGood", {
             id: key
-        }).then(result => {
-            console.log("request result: ", result);
+        }).then(() => {
             getGoodsList()
         })
     };
-    const handleUpdate = (params: any) => {
-        console.log("params:", params);
-        request("updateGood", {
-            goods_id: params.goods_id,
-            goods_name: goodsName
-        }).then(result => {
-            console.log("request result: ", result);
-            getGoodsList()
-            setGoods_name("");
-            setRecord({});
-            setIsModalOpen(false);
-        })
-    }
 
     return (
         <div>
-            <Button onClick={() => showModal("add", null)} type="primary" style={{ marginBottom: 16 }}>
-                追加
-            </Button>
+            <Button onClick={() => showModal("add")} type="primary" style={{ marginBottom: 16 }}>商品を追加</Button>
             <Modal
-              title="商品名"
-              closable={false}
+              title={modalTitle}
+              footer={null}
               open={isModalOpen}
-              cancelText="キャンセル" 
-              okText="確定"
-              onOk={handleOk}
               onCancel={handleCancel}
             >
-                <Input placeholder="商品名" value={goodsName} onChange={e => setGoods_name(e.target.value)} />
+                <Form
+                    name="basic"
+                    form={goodsForm}
+                    labelCol={{ span: 4 }}
+                    onFinish={onFinishForm}
+                    onFinishFailed={onFinishFormFailed}
+                    autoComplete="off"
+                    style={{ marginTop: 30 }}
+                >
+                    <Form.Item<goodsDataType> label="商品名" name="goods_name"
+                        rules={[{ required: true, message: '商品名を入力してください' }]}
+                    >
+                        <TextArea autoSize allowClear placeholder="商品名" />
+                    </Form.Item>
+                    <Form.Item<goodsDataType> label="価格" name="goods_price"
+                        rules={[{ required: true, message: '価格を入力してください' }]}
+                    >
+                        <InputNumber style={{ width: '100%' }} placeholder="価格" />
+                    </Form.Item>
+                    <Form.Item<goodsDataType> label="数量" name="goods_number"
+                        rules={[{ required: true, message: '数量を入力してください' }]}
+                    >
+                        <InputNumber style={{ width: '100%' }} placeholder="数量" />
+                    </Form.Item>
+                    <Form.Item<goodsDataType> name="goods_id" style={{ display: 'none' }}>
+                        <Input type="hidden" />
+                    </Form.Item>
+                    <Form.Item label={null}>
+                        <Button loading={confirmLoading} type="primary" htmlType="submit" style={{ marginLeft: "89.64px" }}>{modalTitle}</Button>
+                    </Form.Item>
+                </Form>
             </Modal>
-            <Table
+            <Table<DataType>
                 columns={columns}
                 loading={loading}
                 rowKey={record => record.goods_id}

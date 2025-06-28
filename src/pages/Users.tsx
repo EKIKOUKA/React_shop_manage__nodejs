@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Input, Modal, Form, Switch, Popconfirm, Select, Upload, Image } from 'antd';
-import { EditOutlined, DeleteOutlined, SettingOutlined, CheckOutlined, CloseOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, CheckOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import request from "../request"
 import type { SorterResult } from 'antd/es/table/interface';
 import type { GetProp, TableProps, FormProps, UploadFile, UploadProps } from 'antd';
@@ -31,19 +31,12 @@ interface Education {
     label: string,
     value: string
 }
-const getBase64 = (file: FileType): Promise<string> =>
-    new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = (error) => reject(error);
-    });
 
 const Users: React.FC = () => {
 
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
-    const [modalTitle, setModalTitle] = useState('');
+    const [modalTitle, setModalTitle] = useState('追加');
     const [educationList, setEducationList] = useState<Education[]>([])
     const [userForm] = Form.useForm();
     const [searchForm] = Form.useForm();
@@ -52,7 +45,10 @@ const Users: React.FC = () => {
     const [tableParams, setTableParams] = useState<TableParams>({
         pagination: {
             current: 1,
-            pageSize: 10
+            pageSize: 10,
+            showSizeChanger: true,
+            pageSizeOptions: [10, 20, 30, 50],
+            locale: { items_per_page: '件 / ページ' }
         }
     });
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -62,12 +58,11 @@ const Users: React.FC = () => {
         {
             title: 'ID',
             dataIndex: 'user_id',
-            sorter: true
+            sorter: (a, b) => a.user_id - b.user_id
         },
         {
             title: '名前',
-            dataIndex: 'username',
-            sorter: true
+            dataIndex: 'username'
         },
         {
             title: '性別',
@@ -76,6 +71,7 @@ const Users: React.FC = () => {
                 { text: 'Male', value: 'male' },
                 { text: 'Female', value: 'female' }
             ],
+            onFilter: (value, record) => record.gender === value,
             render: (_, record) => {
                 return <span> { record.user_id == 1 && record.gender == "male" ? "両百斤真男兒" : record.gender == "female" ? "女性" : "男性" } </span>
             }
@@ -112,27 +108,42 @@ const Users: React.FC = () => {
             dataIndex: "avatar",
             render: (_, record) => {
                 return record.avatar
-                    ? <img src={record.avatar} style={{ width: "89.64px" }} />
+                    ? <img src={record.avatar} style={{ width: "60px" }} />
                     : null
             }
         },
         {
             title: '操作',
             key: 'action',
-            width: "10%",
+            width: 216,
             render: (_, record) => (
                 <>
-                    <Button onClick={() => showModal("update", record)} style={{marginRight: "10px"}} type="primary" shape="circle" icon={<EditOutlined />} />
-                    <Button style={{marginRight: "10px"}} danger shape="circle" icon={<DeleteOutlined />} />
-                    <Button style={{marginRight: "10px"}} shape="circle" icon={<SettingOutlined />} />
+                    <Button onClick={() => showModal("update", record)} style={{marginRight: "10px"}} type="primary" icon={<EditOutlined />}>編集</Button>
+                    <Popconfirm title="削除?" cancelText="キャンセル" okText="確定" onConfirm={() => deleteUser(record.user_id)}>
+                        <Button style={{marginRight: "10px"}} danger icon={<DeleteOutlined />}>削除</Button>
+                    </Popconfirm>
                 </>
             )
         }
     ];
 
 
-    const showModal = (status: 'add' | 'update', record: any) => {
+    const showModal = (status: 'add' | 'update', record?: userDataType) => {
         setModalTitle(status == "add" ? "追加" : "更新")
+        if (status === "update" && record) {
+            const avatarList: UploadFile[] = record.avatar
+                ? [{
+                    uid: '-1',
+                    name: 'avatar.jpg',
+                    status: 'done',
+                    url: record.avatar
+                }]
+                : [];
+            setFileList(avatarList);
+            userForm.setFieldsValue(record);
+        } else {
+            userForm.resetFields();
+        }
         setOpen(true);
     };
     const handleCancel = () => {
@@ -141,39 +152,50 @@ const Users: React.FC = () => {
         setFileList([])
     };
     const handleActiveConfirm = (record: userDataType) => {
-        record.isActive = !record.isActive;
-        fetchData()
+        request("updateUserActive", {
+            user_id: record.user_id,
+            isActive: (record as any).isActive = record.isActive ? 0 : 1
+        }).then(() => {
+            onFinishSearch(searchForm.getFieldsValue())
+        })
     }
 
 
     const onFinishForm: FormProps<userDataType>['onFinish'] = (values) => {
-        console.log('onFinishForm Success:', values);
+        values.avatar = modalTitle === "追加" ? fileList[0]?.response.url : fileList[0]?.url;
+        (values as any).isActive = values.isActive ? 1 : 0;
         setConfirmLoading(true);
-        setTimeout(() => {
+        request(modalTitle === "追加" ? "addUser" : "updateUser", values).then(() => {
             handleCancel();
             setConfirmLoading(false);
-        }, 2000);
+            onFinishSearch(searchForm.getFieldsValue())
+        })
     };
+    const deleteUser = (user_id: number) => {
+        setLoading(true);
+        request("deleteUser", {
+            user_id
+        }).then(() => {
+            setLoading(false);
+            onFinishSearch(searchForm.getFieldsValue())
+        })
+    }
     const onFinishFormFailed: FormProps<userDataType>['onFinishFailed'] = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
-    const onFinishSearch: FormProps<userDataType>['onFinish'] = (values) => {
-        console.log('onFinishSearch Success:', values);
-        console.log("searchForm: ", searchForm)
-        if (typeof values.isActive !== "undefined") {
-            (values as any).isActive = values.isActive ? 1 : 0;
-        }
+    const onFinishSearch = (values: userDataType) => {
+        (values as any).isActive = values.isActive ? 1 : 0;
         request("getUserList", {
             current: tableParams.pagination?.current,
             pageSize: tableParams.pagination?.pageSize,
             ...values
         }).then(res => {
-            console.log("res", res);
             setData(Array.isArray(res.data) ? res.data : []);
             setTableParams({
                 ...tableParams,
                 pagination: {
                     ...tableParams.pagination,
+                    current: 1,
                     total: res.total
                 }
             });
@@ -184,7 +206,6 @@ const Users: React.FC = () => {
         searchForm.resetFields();
     }
     const handleTableChange: TableProps<userDataType>['onChange'] = (pagination, filters, sorter) => {
-        console.log("pagination: ", pagination)
         setTableParams({
             pagination,
             filters,
@@ -192,7 +213,6 @@ const Users: React.FC = () => {
             sortField: Array.isArray(sorter) ? undefined : sorter.field,
         });
 
-        // `dataSource` is useless since `pageSize` changed
         if (pagination.pageSize !== tableParams.pagination?.pageSize) {
             setData([]);
         }
@@ -203,7 +223,6 @@ const Users: React.FC = () => {
             current: tableParams.pagination?.current,
             pageSize: tableParams.pagination?.pageSize
         }).then(res => {
-            console.log("res: ", res)
             setData(Array.isArray(res.data) ? res.data : []);
             setTableParams({
                 ...tableParams,
@@ -215,6 +234,13 @@ const Users: React.FC = () => {
             setLoading(false);
         });
     };
+    const avatarOnRemove = (avatar: string) => {
+        request("upload-file-delete", {
+            avatar
+        }).then(res => {
+            console.log(res)
+        });
+    }
 
     useEffect(fetchData, [
         tableParams.pagination?.current,
@@ -225,13 +251,9 @@ const Users: React.FC = () => {
     ]);
     useEffect(() => {
         request("getEducationList").then(res => {
-            console.log("getEducationList res: ", res)
             setEducationList(res.data)
         })
     }, [])
-    useEffect(() => {
-        console.log("educationList changed:", educationList)
-    }, [educationList])
 
     const handlePreview = async (file: UploadFile) => {
         if (!file.url && !file.preview) {
@@ -241,10 +263,17 @@ const Users: React.FC = () => {
         setPreviewImage(file.url || (file.preview as string));
         setPreviewOpen(true);
     };
+    const getBase64 = (file: FileType): Promise<string> =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = (error) => reject(error);
+        });
 
     return (
         <>
-            <Button onClick={() => showModal("add", null)} type="primary" size="large">ユーザーを追加</Button>
+            <Button onClick={() => showModal("add")} type="primary">ユーザーを追加</Button>
             <Form form={searchForm} onFinish={onFinishSearch} initialValues={{ isActive: true }} layout="inline"
                   className="table-demo-control-bar" style={{
                     margin: "16px 0",
@@ -286,7 +315,7 @@ const Users: React.FC = () => {
                     />
                 </Form.Item>
                 <Form.Item>
-                    <Button type="primary" iconPosition="end" icon={<SearchOutlined />} htmlType="submit" style={{ marginLeft: "89.64px" }}>探す</Button>
+                    <Button type="primary" iconPosition="end" icon={<SearchOutlined />} htmlType="submit" style={{ marginLeft: "41px" }}>探す</Button>
                 </Form.Item>
                 <Form.Item>
                     <Button htmlType="button" onClick={ searchFormReset }>リセット</Button>
@@ -310,11 +339,11 @@ const Users: React.FC = () => {
                     <Form.Item<userDataType>
                         label="名前"
                         name="username"
-                        rules={[{ required: true, message: 'Please input your username!' }]}
+                        rules={[{ required: true, message: '名前を入力してください' }]}
                     >
                         <Input allowClear placeholder="名前" />
                     </Form.Item>
-                    <Form.Item<userDataType> label="性別" name="gender" rules={[{ required: true, message: 'Please input your username!' }]}>
+                    <Form.Item<userDataType> label="性別" name="gender" rules={[{ required: true, message: '性別を選択してください' }]}>
                         <Select
                             placeholder="性別"
                             allowClear
@@ -324,7 +353,7 @@ const Users: React.FC = () => {
                             ]}
                         />
                     </Form.Item>
-                    <Form.Item<userDataType> label="学歴" name="user_edu" rules={[{ required: true, message: 'Please input your username!' }]}>
+                    <Form.Item<userDataType> label="学歴" name="user_edu" rules={[{ required: true, message: '学歴を選択してください' }]}>
                         <Select
                             placeholder="学歴"
                             allowClear
@@ -335,7 +364,8 @@ const Users: React.FC = () => {
                             options={educationList}
                         />
                     </Form.Item>
-                    <Form.Item<userDataType> label="メール" name="user_email" rules={[{ required: true, message: 'Please input your username!' }]}>
+                    <Form.Item<userDataType> label="メール" name="user_email"
+                         rules={[{ required: true, message: 'メールを入力してください' }]}>
                         <Input placeholder="メール" allowClear />
                     </Form.Item>
                     <Form.Item label="状態" name="isActive">
@@ -345,35 +375,55 @@ const Users: React.FC = () => {
                         />
                     </Form.Item>
                     <Form.Item name="avatar" label="アバター">
-                        <ImgCrop rotationSlider>
-                            <Upload
-                                action="https://www.makotodeveloper.website/shop_sample/upload"
-                                listType="picture-circle"
-                                fileList={fileList}
-                                onPreview={handlePreview}
-                                onChange={({ file, fileList: newList }) => {
-                                    console.log("newList: ", newList)
-                                    if (file.status === 'done' && file.response?.url) {
-                                        file.url = file.response.url;
-                                    }
-                                    setFileList(newList);
-                                }}
-                            >
-                                {fileList.length < 1 && '+ Upload'}
-                            </Upload>
-                        </ImgCrop>
-                        {previewImage && (
-                            <Image
-                                wrapperStyle={{ display: 'none' }}
-                                preview={{
-                                    visible: previewOpen
-                                }}
-                                src={previewImage}
-                            />
-                        )}
+                        <>
+                            <ImgCrop rotationSlider>
+                                <Upload
+                                    action="https://www.makotodeveloper.website/shop_sample/upload"
+                                    headers={{
+                                        Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+                                    }}
+                                    listType="picture-circle"
+                                    fileList={fileList}
+                                    onPreview={handlePreview}
+                                    onChange={({ file, fileList: newList }) => {
+                                        console.log("newList: ", newList)
+                                        if (file.status === 'done' && file.response?.url) {
+                                            file.url = file.response.url;
+                                        }
+                                        setFileList(newList);
+                                    }}
+                                    onRemove={(file) => {
+                                        console.log(file);
+                                        if (file.url) {
+                                            const filename = file.url.split("/").pop();
+                                            if (!filename) return;
+                                            avatarOnRemove(file.url)
+                                        }
+
+                                        return true;
+                                    }}
+                                >
+                                    { fileList.length < 1 && '+ Upload' }
+                                </Upload>
+                            </ImgCrop>
+                            {previewImage && (
+                                <Image
+                                    wrapperStyle={{ display: 'none' }}
+                                    preview={{
+                                        visible: previewOpen,
+                                        onVisibleChange: (visible) => setPreviewOpen(visible),
+                                        afterOpenChange: (visible) => !visible && setPreviewImage('')
+                                    }}
+                                    src={previewImage}
+                                />
+                            )}
+                        </>
+                    </Form.Item>
+                    <Form.Item name="user_id" style={{ display: 'none' }}>
+                        <Input type="hidden" />
                     </Form.Item>
                     <Form.Item label={null}>
-                        <Button loading={confirmLoading} type="primary" htmlType="submit" style={{ marginLeft: "89.64px" }}>追加</Button>
+                        <Button loading={confirmLoading} type="primary" htmlType="submit" style={{ marginLeft: "89.64px" }}>{modalTitle}</Button>
                     </Form.Item>
                 </Form>
             </Modal>

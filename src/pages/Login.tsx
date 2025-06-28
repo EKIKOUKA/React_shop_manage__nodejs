@@ -14,22 +14,18 @@ const Login = () => {
             username: values.username,
             password: values.password
         }).then(res => {
-            console.log("request res: ", res);
-            if (res.status !== 200) {
-                console.log("error request res: ", res);
+            if (!res.success) {
                 messageApi.open({
                     type: 'error',
                     content: 'アカンウトかパウワードが間違った！',
                 });
             } else {
-                console.log("success request res: ", res);
                 localStorage.setItem("userInfo", JSON.stringify({
                     userId: res?.userInfo.userId,
                     username: res?.userInfo.username,
                     user_email: res?.userInfo.user_email,
                     avatar: res?.userInfo.avatar,
                 }));
-                console.log(JSON.parse(localStorage.getItem("userInfo")!))
                 messageApi.open({
                     type: 'success',
                     content: 'ログイン成功！',
@@ -64,7 +60,7 @@ const Login = () => {
                     wrapperCol={{ span: 16 }}
                     initialValues={{
                         remember: true,
-                        username: 'test',
+                        username: 'test@yahoo.com',
                         password: '123456',
                     }}
                     onFinish={onFinish}
