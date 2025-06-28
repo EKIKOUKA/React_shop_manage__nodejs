@@ -103,7 +103,7 @@ const MainLayout = () => {
                     />
                 </Sider>
                 <Layout>
-                    <Content style={{ margin: '16px' }}>
+                    <Content style={{ margin: '16px', height: '91.7vh' }}>
                         <Outlet />
                     </Content>
                 </Layout>
