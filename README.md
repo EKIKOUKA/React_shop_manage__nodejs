@@ -7,7 +7,7 @@
 <img width="49%" src="https://github.com/user-attachments/assets/6f366619-65e1-4d09-8016-d3c5da1e2413" />
 <img width="49%" src="https://github.com/user-attachments/assets/52056c2c-3067-46eb-9afa-e283d1c6718b" />
 <img width="49%" src="https://github.com/user-attachments/assets/84881588-1bce-45f9-9607-450b1b6240be" />
-<img width="750" src="https://github.com/user-attachments/assets/f0856ed5-2ba8-452c-93eb-a1c92746498f" />
+<img width="356" src="https://github.com/user-attachments/assets/baa27e27-c2d5-4e0b-8f9d-6e11ea869113" />
 
 ## Network Headers Status Code
 | ステータスコード | 意味（用途）                           |
