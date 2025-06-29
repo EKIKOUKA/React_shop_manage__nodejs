@@ -16,8 +16,8 @@ export default function request(url: string, data: object = {}): Promise<any> {
             localStorage.removeItem("userInfo");
             localStorage.removeItem("token");
             window.location.href = '#/login';
-        } else if (response.status === 500) {
-            alert("サーバーエラー");
+        } else if (response.status === 500 || response.status === 502) {
+            // alert("サーバーエラー");
         }
     }).catch((error: unknown) => {
         console.log("Request error: ", error);

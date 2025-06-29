@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Form, Input, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import request from "../request";
+import request from "../utils/request";
 import "../index.scss"
 
 const Login = () => {
@@ -60,7 +60,7 @@ const Login = () => {
                     wrapperCol={{ span: 16 }}
                     initialValues={{
                         remember: true,
-                        username: 'test@yahoo.com',
+                        username: 'test@yahoo.co.jp',
                         password: '123456',
                     }}
                     onFinish={onFinish}

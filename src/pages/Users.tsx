@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Input, Modal, Form, Switch, Popconfirm, Select, Upload, Image } from 'antd';
 import { EditOutlined, DeleteOutlined, CheckOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons';
-import request from "../request"
+import request from "../utils/request"
 import type { SorterResult } from 'antd/es/table/interface';
 import type { GetProp, TableProps, FormProps, UploadFile, UploadProps } from 'antd';
 type ColumnsType<T extends object = object> = TableProps<T>['columns'];
@@ -28,8 +28,7 @@ interface TableParams {
 
 interface Education {
     edu_id: number,
-    label: string,
-    value: string
+    label: string
 }
 
 const Users: React.FC = () => {
@@ -242,6 +241,12 @@ const Users: React.FC = () => {
         });
     }
 
+
+    useEffect(() => {
+        request("getEducationList").then(res => {
+            setEducationList(res.data)
+        })
+    }, [])
     useEffect(fetchData, [
         tableParams.pagination?.current,
         tableParams.pagination?.pageSize,
@@ -249,11 +254,6 @@ const Users: React.FC = () => {
         tableParams?.sortField,
         JSON.stringify(tableParams.filters),
     ]);
-    useEffect(() => {
-        request("getEducationList").then(res => {
-            setEducationList(res.data)
-        })
-    }, [])
 
     const handlePreview = async (file: UploadFile) => {
         if (!file.url && !file.preview) {

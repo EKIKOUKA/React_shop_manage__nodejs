@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import request from "../request"
+import request from "../utils/request"
 import { Table, type TableProps, type GetProp } from 'antd';
 import timestampFormat from "../utils/timestampFormat"
 import type {SorterResult} from "antd/es/table/interface";

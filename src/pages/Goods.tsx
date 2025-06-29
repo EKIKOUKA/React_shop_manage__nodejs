@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import request from "../request"
+import request from "../utils/request"
 import {Button, Table, Input, Modal, Space, Popconfirm, Form, InputNumber} from 'antd';
 import type { GetProp, TableProps, FormProps } from 'antd';
 import {EditOutlined, DeleteOutlined} from "@ant-design/icons";
@@ -77,6 +77,7 @@ const Goods = () => {
         }, {
             title: '操作',
             key: 'action',
+            width: 216,
             render: (_: any, record: any) => (
                 <Space size="middle">
                     <Button onClick={() => showModal("update", record)} type="primary" icon={<EditOutlined />}>編集</Button>

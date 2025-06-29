@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Form, Input, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import request from "../request";
+import request from "../utils/request";
 import "../index.scss"
 
 const TOTP_Secure = () => {

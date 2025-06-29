@@ -3,7 +3,7 @@ import { Popover, Button, Input, message } from 'antd';
 import type { GetProps } from 'antd';
 import {useNavigate} from "react-router-dom";
 type OTPProps = GetProps<typeof Input.OTP>;
-import request from "../request"
+import request from "../utils/request"
 import "../index.scss"
 
 interface dataType {
