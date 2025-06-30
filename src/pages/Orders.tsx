@@ -30,7 +30,6 @@ const Orders = () => {
     interface DataType {
         order_id: number;
         create_time: string;
-        is_send: string;
         order_type: string;
         order_number: string;
         order_pay: string;

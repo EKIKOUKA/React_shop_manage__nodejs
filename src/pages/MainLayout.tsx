@@ -78,7 +78,7 @@ const MainLayout = () => {
                     <img src={systemLogo} className="logo" style={{ height: '70%' }} />
                     <span style={{color: '#FFF', marginLeft: '10px'}}>ショップ管理システム</span>
                 </div>
-                <div style={{color: '#FFF', marginRight: '15px', textDecoration: "underline", cursor: "pointer" }} className={"logo"}>
+                <div style={{color: '#FFF', width: '5vh', cursor: "pointer" }} className={"logo"}>
                     { !userAvatar &&
                         <div onClick={() => navigate('/login')}>登録</div>
                     }
