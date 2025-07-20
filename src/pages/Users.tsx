@@ -10,7 +10,7 @@ type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 import ImgCrop from 'antd-img-crop';
 
 interface userDataType {
-    isActive: true | false;
+    is_active: true | false;
     username: string;
     gender: string;
     user_email: string;
@@ -27,8 +27,8 @@ interface TableParams {
 }
 
 interface Education {
-    edu_id: number,
-    label: string
+    sort_order: number,
+    edu_value: string
 }
 
 const Users: React.FC = () => {
@@ -79,8 +79,8 @@ const Users: React.FC = () => {
             title: "学歴",
             dataIndex: "user_edu",
             render: (_, record) => {
-                const edu = educationList.find(e => e.edu_id === record.user_edu)
-                return edu?.label
+                const edu = educationList.find(e => e.sort_order === record.user_edu)
+                return edu?.edu_value
             }
         },
         {
@@ -89,14 +89,14 @@ const Users: React.FC = () => {
         },
         {
             title: '状態',
-            dataIndex: 'isActive',
+            dataIndex: 'is_active',
             render: (_, record) => {
                 return (
                     <Popconfirm title="変更?" cancelText="キャンセル" okText="確定" onConfirm={() => handleActiveConfirm(record) }>
                         <Switch
                             checkedChildren={<CheckOutlined />}
                             unCheckedChildren={<CloseOutlined />}
-                            checked={record.isActive}
+                            checked={record.is_active}
                         />
                     </Popconfirm>
                 )
@@ -153,7 +153,7 @@ const Users: React.FC = () => {
     const handleActiveConfirm = (record: userDataType) => {
         request("updateUserActive", {
             user_id: record.user_id,
-            isActive: (record as any).isActive = record.isActive ? 0 : 1
+            is_active: (record as any).is_active = record.is_active ? 0 : 1
         }).then(() => {
             onFinishSearch(searchForm.getFieldsValue())
         })
@@ -162,7 +162,7 @@ const Users: React.FC = () => {
 
     const onFinishForm: FormProps<userDataType>['onFinish'] = (values) => {
         values.avatar = modalTitle === "追加" ? fileList[0]?.response.url : fileList[0]?.url;
-        (values as any).isActive = values.isActive ? 1 : 0;
+        (values as any).is_active = values.is_active ? 1 : 0;
         setConfirmLoading(true);
         request(modalTitle === "追加" ? "addUser" : "updateUser", values).then(() => {
             handleCancel();
@@ -183,7 +183,7 @@ const Users: React.FC = () => {
         console.log('Failed:', errorInfo);
     };
     const onFinishSearch = (values: userDataType) => {
-        (values as any).isActive = values.isActive ? 1 : 0;
+        (values as any).is_active = values.is_active ? 1 : 0;
         request("getUserList", {
             current: tableParams.pagination?.current,
             pageSize: tableParams.pagination?.pageSize,
@@ -274,7 +274,7 @@ const Users: React.FC = () => {
     return (
         <>
             <Button onClick={() => showModal("add")} type="primary">ユーザーを追加</Button>
-            <Form form={searchForm} onFinish={onFinishSearch} initialValues={{ isActive: true }} layout="inline"
+            <Form form={searchForm} onFinish={onFinishSearch} initialValues={{ is_active: true }} layout="inline"
                   className="table-demo-control-bar" style={{
                     margin: "16px 0",
                     background: "white",
@@ -299,8 +299,8 @@ const Users: React.FC = () => {
                         placeholder="学歴"
                         allowClear
                         fieldNames={{
-                            label: 'label',
-                            value: 'edu_id',
+                            label: 'edu_value',
+			                value: 'sort_order'
                         }}
                         options={educationList}
                     />
@@ -308,7 +308,7 @@ const Users: React.FC = () => {
                 <Form.Item label="メール" name="user_email">
                     <Input placeholder="メール" allowClear />
                 </Form.Item>
-                <Form.Item label="状態" name="isActive" valuePropName="checked">
+                <Form.Item label="状態" name="is_active" valuePropName="checked">
                     <Switch
                         checkedChildren={<CheckOutlined />}
                         unCheckedChildren={<CloseOutlined />}
@@ -331,7 +331,7 @@ const Users: React.FC = () => {
                     name="basic"
                     form={userForm}
                     labelCol={{ span: 5 }}
-                    initialValues={{ isActive: true }}
+                    initialValues={{ is_active: true }}
                     onFinish={onFinishForm}
                     onFinishFailed={onFinishFormFailed}
                     autoComplete="off"
@@ -358,8 +358,8 @@ const Users: React.FC = () => {
                             placeholder="学歴"
                             allowClear
                             fieldNames={{
-                                label: 'label',
-                                value: 'edu_id',
+                                label: 'edu_value',
+                                value: 'sort_order'
                             }}
                             options={educationList}
                         />
@@ -368,7 +368,7 @@ const Users: React.FC = () => {
                          rules={[{ required: true, message: 'メールを入力してください' }]}>
                         <Input placeholder="メール" allowClear />
                     </Form.Item>
-                    <Form.Item label="状態" name="isActive">
+                    <Form.Item label="状態" name="is_active">
                         <Switch
                             checkedChildren={<CheckOutlined />}
                             unCheckedChildren={<CloseOutlined />}
@@ -378,7 +378,7 @@ const Users: React.FC = () => {
                         <>
                             <ImgCrop rotationSlider>
                                 <Upload
-                                    action="https://www.makotodeveloper.website/shop_sample/upload"
+                                    action="https://www.makotodeveloper.website/shop_sample/java_api/upload"
                                     headers={{
                                         Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
                                     }}

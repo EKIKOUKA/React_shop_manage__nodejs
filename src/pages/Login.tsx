@@ -11,13 +11,13 @@ const Login = () => {
     const onFinish = (values: { username: string, password: string }) => {
         console.log('Success:', values);
         request("login", {
-            username: values.username,
+            user_email: values.username,
             password: values.password
         }).then(res => {
             if (!res.success) {
                 messageApi.open({
                     type: 'error',
-                    content: 'アカンウトかパウワードが間違った！',
+                    content: res.message,
                 });
             } else {
                 localStorage.setItem("userInfo", JSON.stringify({

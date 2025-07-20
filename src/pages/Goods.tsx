@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import request from "../utils/request"
-import {Button, Table, Input, Modal, Space, Popconfirm, Form, InputNumber} from 'antd';
+import {Button, Table, Input, Modal, Space, Popconfirm, Form, InputNumber, message} from 'antd';
 import type { GetProp, TableProps, FormProps } from 'antd';
 import {EditOutlined, DeleteOutlined} from "@ant-design/icons";
 import timestampFormat from "../utils/timestampFormat";
@@ -28,6 +28,7 @@ const Goods = () => {
     const [modalTitle, setModalTitle] = useState('追加');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
     const showModal = (status: 'add' | 'update', record?: goodsDataType) => {
         console.log("record: ", record)
         setModalTitle(status == "add" ? "追加" : "更新")
@@ -133,6 +134,10 @@ const Goods = () => {
         request(modalTitle === "追加" ? "addGood" : "updateGood", values).then(result => {
             handleCancel();
             setConfirmLoading(false);
+            messageApi.open({
+                type: result.success ? "success" : "error",
+                content: result.message
+            });
             getGoodsList()
         })
     };
@@ -141,14 +146,19 @@ const Goods = () => {
     };
     const handleDelete = (key: number) => {
         request("deleteGood", {
-            id: key
-        }).then(() => {
+            goods_id: key
+        }).then(result => {
+            messageApi.open({
+                type: result.success ? "success" : "error",
+                content: result.message
+            });
             getGoodsList()
         })
     };
 
     return (
         <div>
+            {contextHolder}
             <Button onClick={() => showModal("add")} type="primary" style={{ marginBottom: 16 }}>商品を追加</Button>
             <Modal
               title={modalTitle}

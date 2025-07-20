@@ -9,11 +9,15 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '/shop_sample/api': {
-                target: 'https://www.makotodeveloper.website',
-                changeOrigin: true,
-                rewrite: path => path.replace(/^\/shop_sample\/api/, '/shop_sample/api')
-            }
+            '/shop_sample/java_api': { // Java Spring Boot
+                target: 'http://localhost:8080',
+                // target: 'https://www.makotodeveloper.website',
+                changeOrigin: true
+            },
+            '/shop_sample/nodejs_api': { // Node.js
+                target: 'http://localhost:3000',
+                changeOrigin: true
+    	    }
         }
     }
 })
