@@ -4,6 +4,7 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingCartOutlined, AppstoreOutlined, UserOutlined, OrderedListOutlined, ShopOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import systemLogo from "../assets/vite.svg"
+import "../index.scss"
 const { Sider, Content } = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -73,29 +74,30 @@ const MainLayout = () => {
 
     return (
         <>
-            <div style={{ backgroundColor: '#000', height: '5vh', lineHeight: '5vh', display: 'flex', justifyContent: 'space-between'}} className={"header"}>
-                <div onClick={() => navigate('/')} className="system-name" style={{margin: '0 10px 0 20px', cursor: 'pointer'}}>
-                    <img src={systemLogo} className="logo" style={{ height: '70%' }} />
-                    <span style={{color: '#FFF', marginLeft: '10px'}}>ショップ管理システム</span>
+            <div className={"header"}>
+                <div onClick={() => navigate('/')} className="system-name">
+                    <img src={systemLogo} className="logo" />
+                    <span>ショップ管理システム</span>
                 </div>
-                <div style={{color: '#FFF', width: '5vh', cursor: "pointer" }} className={"logo"}>
+                <div className={"user-logo"}>
                     { !userAvatar &&
                         <div onClick={() => navigate('/login')}>登録</div>
                     }
                     { userAvatar &&
                         <Dropdown menu={{ items: DropMenuItems }} trigger={['click']}>
                             <a onClick={(e) => e.preventDefault()}>
-                                <img style={{height: "80%", borderRadius: "50%"}} src={userAvatar} />
+                                <img src={userAvatar} />
                             </a>
                         </Dropdown>
                     }
                 </div>
             </div>
-            <Layout>
+            <Layout className="main-content">
                 <Sider>
                     <Menu
                         theme="dark"
                         mode="inline"
+                        className="sider-menu"
                         selectedKeys={[location.pathname.replace('/', '')]}
                         defaultOpenKeys={['user', 'good', 'order']}
                         onClick={({ key }) => navigate(`/${key}`)}
@@ -103,7 +105,7 @@ const MainLayout = () => {
                     />
                 </Sider>
                 <Layout>
-                    <Content style={{ margin: '16px', height: '91.7vh' }}>
+                    <Content className="layout-content">
                         <Outlet />
                     </Content>
                 </Layout>

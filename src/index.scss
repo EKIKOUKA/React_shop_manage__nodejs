@@ -4,6 +4,60 @@
     box-sizing: border-box;
 }
 
+.header {
+  background-color: #000;
+  height: 5vh;
+  line-height: 5vh;
+  display: flex;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+
+  .system-name {
+    margin: 0 10px 0 20px;
+    cursor: pointer;
+    min-width: 20vw;
+    display: flex;
+    align-items: center;
+
+    .logo {
+      height: 70%;
+    }
+
+    > span {
+      color: #FFF;
+      margin-left: 10px;
+      white-space: nowrap;
+    }
+  }
+
+  .user-logo {
+    color: #FFF;
+    width: 5vh;
+    cursor: pointer;
+
+    img {
+      height: 80%;
+      border-radius: 50%;
+    }
+  }
+}
+
+.main-content {
+  min-height: 95vh;
+
+  .sider-menu {
+    position: sticky;
+    top: 5vh;
+    z-index: 1;
+  }
+
+  .layout-content {
+    margin: 16px;
+  }
+}
+
 .loading-spin.ant-spin {
     max-height: 100vh !important;
     min-height: 100vh !important;
