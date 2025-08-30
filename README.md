@@ -1,4 +1,4 @@
-# React + TypeScript + Vite + Ant Designのショップ管理システムサンプル、Node.jsとMySqlとNginxをサポートしている
+# React + TypeScript + Vite + Ant Designのショップ管理システムサンプル、JavaとMySqlとNginxをサポートしている
 ## ウェブサイトアドレス： https://www.makotodeveloper.website/shop_sample/
 
 <img width="49%" src="https://github.com/user-attachments/assets/1bf79ee6-3b2b-422c-a3c6-a98b75c7f57c" />
